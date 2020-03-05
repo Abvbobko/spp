@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <form action="/" method="POST" id="task_form">
+        <label for="task">Task:</label><br>
+        <input type="text" id="task" name="task"><br>
+        
+        <label for="date">Date:</label><br> 
+        <input type="date" id="date" name="date"><br>
+        
+        <label for="status">Status:</label>
+        <select id="status" name="status" form="task_form">
+            <option value="green">green</option>
+            <option value="orange">orange</option>
+            <option value="red">red</option>            
+        </select><br>
+    
+
+        <label for="file">File:</label>
+        <input type="file" id="file" name="file"><br>
+        <input type="submit" value="Add">
+    </form>
+</body>
+</html>
+
+
+
