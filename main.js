@@ -11,8 +11,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 // определяем обработчик для маршрута "/"
+/////////////////// work with data base
+var mysql = require('mysql');
 
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "qwerty12345678"
+});
 
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
+////////
 app.get("/", function(request, response){
     // отправляем ответ
     var path = require('path'); 
@@ -24,7 +36,7 @@ const path = require('path');
 app.post("/", function(request, response){
     // отправляем ответ
     var status = request.body.status;
-    console.log(typeof(status));
+    console.log(request.body.date);
     //console.log('Got body:', request.body);
     //var fname = request.body.fname;
     //var lname = request.body.lname;
