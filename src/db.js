@@ -21,6 +21,6 @@ class DataAccessor {
     }
 }
 
-var a = 2;
+module.exports = { DataAccessor };
 
 //// сделать все в виде обьекта!!!!!!!!!!!!!

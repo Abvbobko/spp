@@ -10,25 +10,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-// определяем обработчик для маршрута "/"
-/////////////////// work with data base
-var mysql = require('mysql');
+db = require("db").db;
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "qwerty12345678"
-});
 
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
-////////
 app.get("/", function(request, response){
     // отправляем ответ
     var path = require('path'); 
-    response.sendFile(__dirname + "/data/pages/main_template.html");
+    response.sendFile(__dirname + "../data/pages/main_template.html");
     
 });
 
