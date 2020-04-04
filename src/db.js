@@ -33,22 +33,27 @@ class DataAccessor {
     }
 
     get_statuses() {
-        
-        const sql = "SELECT name FROM statuses";
-        console.log(21)
-        this._con.query(sql, function(err, result) {
-            if(err) 
-                console.log(err);
-            else {
-                console.log(22)
-                let statuses = []
-                for (let i = 0; i < result.length; i++)
-                    statuses.push(result[i].name);
-                console.log(23, statuses);
-                return statuses;
-            } 
-                
-        });
+        const sql = "SELECT name FROM statuses";        
+        let con = this._con;
+        return new Promise(function(resolve, reject) {
+            // Эта функция будет вызвана автоматически
+            console.log("Start getting statuses from database");
+            con.query(sql, function(err, result) {
+                if(err) 
+                    reject(err);
+                else {                    
+                    let statuses = []
+                    for (let i = 0; i < result.length; i++)
+                        statuses.push(result[i].name);                                                                         
+                    resolve(statuses);
+                } 
+                    
+            });
+            // В ней можно делать любые асинхронные операции,
+            // А когда они завершатся — нужно вызвать одно из:
+            // resolve(результат) при успешном выполнении
+            // reject(ошибка) при ошибке
+        });                
     }
 
     close_connection() {

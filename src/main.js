@@ -14,11 +14,13 @@ app.set('view engine', 'ejs');
 db = require("./db").db;
 
 app.get("/", function(request, response){    
-    let statuses = db.get_statuses();
-    console.log(1, statuses)
-    // path.resolve - concat path    
-    response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {statuses: statuses});
-
+    db.get_statuses().then(function(statuses) {
+      console.log(typeof(statuses));
+      statuses.forEach(element => {
+        console.log(element)
+      });      
+      response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": statuses});
+    }).catch((err) => {console.log(err)})
 });
 
 app.post("/", function(request, response){
