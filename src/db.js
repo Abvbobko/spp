@@ -5,6 +5,7 @@ const PASSWORD = "qwerty12345678";
 var mysql = require('mysql');
 
 class DataAccessor {    
+
     constructor(host, user, password) {
         this._con = mysql.createConnection({
             host: host,
@@ -17,10 +18,31 @@ class DataAccessor {
             if (err) 
                 throw err;
             console.log("Connected!");
+        });        
+    }
+
+    get_status_by_id(status_name) {
+        console.log("Getting status by id.");
+        let con = this._con;
+        console.log(status_name);
+        const sql = `SELECT id FROM statuses WHERE name = "${status_name}"`
+        return new Promise(function(resolve, reject) {            
+            con.query(sql, function(err, result) {
+                if (result.length == 0) {
+                    err = "Can't get status from data base." // Стоило бы потестить
+                }
+                if (err) {
+                    reject(err);
+                } else {                    
+                    resolve(result[0].id);
+                }
+            });
         });
     }
 
     insert_task(task_text, task_date, task_status, task_file) {
+        
+        // this.get_status_id(task_status);
         const user = [task_text, task_file.originalname, task_date, 1, task_file.filename];
         const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";
  

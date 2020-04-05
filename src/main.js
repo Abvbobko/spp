@@ -11,7 +11,7 @@ const app = express();
 app.use(multer({dest:"../data/files"}).single("file"));
 app.set('view engine', 'ejs');
 
-db = require("./db").db;
+var db = require("./db").db;
 
 app.get("/", function(request, response){    
     db.get_statuses().then(function(statuses) {
@@ -29,7 +29,8 @@ app.post("/", function(request, response){
     let text = request.body.task;
     let date = request.body.date;
     let filedata = request.file;
-    let status = request.body.status;    
+    let status = request.body.status;   
+    
     db.insert_task(text, date, status, filedata);
     if(!filedata)
       console.log("Ошибка при загрузке файла");
