@@ -41,17 +41,21 @@ class DataAccessor {
     }
 
     insert_task(task_text, task_date, task_status, task_file) {
-        
-        // this.get_status_id(task_status);
-        const user = [task_text, task_file.originalname, task_date, 1, task_file.filename];
-        const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";
- 
-        this._con.query(sql, user, function(err, results) {
-            if(err) 
-                console.log(err);
-            else 
-                console.log("Данные добавлены");   
-        });
+        let con = this._con;
+        this.get_status_by_id(task_status).then(function(status_id) {
+            let original_name = task_file != undefined ? task_file.originalname : null;
+            let file_name = task_file != undefined ? task_file.file_name : null;
+            let date = task_date != '' ? task_date : null;
+            const user = [task_text, original_name, date, status_id, file_name];
+            const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";
+    
+            con.query(sql, user, function(err, results) {
+                if(err) 
+                    console.log(err);
+                else 
+                    console.log("Данные добавлены");   
+            });
+        }).catch((err) => {console.log(err)});
     }
 
     get_statuses() {
