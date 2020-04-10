@@ -1,3 +1,5 @@
+*.todo
+
 # Binary data
 data/files/
 # Logs

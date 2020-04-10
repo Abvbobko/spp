@@ -7,18 +7,18 @@
     </style>
 </head>
 <body>
-    <form action="/" method="POST" id="task_form">
+    <form action="/" method="POST" id="task_form" enctype="multipart/form-data">
         <label for="task">Task:</label><br>
-        <input type="text" id="task" name="task"><br>
+        <input type="text" id="task" name="task" maxlength="255"><br> 
         
         <label for="date">Date:</label><br> 
         <input type="date" id="date" name="date"><br>
         
         <label for="status">Status:</label>
         <select id="status" name="status" form="task_form">
-            <option value="green">green</option>
-            <option value="orange">orange</option>
-            <option value="red">red</option>            
+            <% statuses.forEach(function(status) { %>
+                <option value=<%=status %>><%=status %></option>
+            <% }); %>            
         </select><br>
 
         <label for="file">File:</label>
