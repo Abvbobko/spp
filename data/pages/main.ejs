@@ -25,6 +25,24 @@
         <input type="file" id="file" name="file"><br>
         <input type="submit" value="Add">
     </form>
+
+    <div>
+        <% tasks.forEach(function(task) {
+            let date;
+            if (task.date) {
+                date = `${task.date.getDate()}/${task.date.getMonth()}/${task.date.getFullYear()}`;
+            } else {
+                date = "(No date)";
+            } 
+            let file_name = task.file_name ? task.file_name : "(No file)";            
+        %>
+        <span>Task: <%=task.text %></span>
+        <div>Date: <%= date %></div>
+        <div>Status: <%= task.status %></div>
+        <div>File: <%= file_name %></div><br>       
+                                
+        <% }); %> 
+    </div>
 </body>
 </html>
 

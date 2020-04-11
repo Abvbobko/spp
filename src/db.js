@@ -43,6 +43,7 @@ class DataAccessor {
     get_tasks(status_filter_name=null) {
         let con = this._con;
         
+        // если есть имя статуса - получить его id, иначе пустой промис
         let get_status_id = status_filter_name ? 
             get_status_id_by_name(status_filter_name) 
             : new Promise(function(resolve, reject) {resolve(null)});
@@ -85,7 +86,7 @@ class DataAccessor {
     }
 
     get_statuses() {
-        const sql = "SELECT name FROM statuses";        
+        const sql = "SELECT * FROM statuses";        
         let con = this._con;
         return new Promise(function(resolve, reject) {
             // Эта функция будет вызвана автоматически
@@ -93,11 +94,12 @@ class DataAccessor {
             con.query(sql, function(err, result) {
                 if(err) 
                     reject(err);
-                else {                    
-                    let statuses = []
-                    for (let i = 0; i < result.length; i++)
-                        statuses.push(result[i].name);                                                                         
-                    resolve(statuses);
+                else {           
+                    // console.log(result);         
+                    // let statuses = []
+                    // for (let i = 0; i < result.length; i++)
+                    //     statuses.push(result[i].name);                                                                         
+                    resolve(result);
                 } 
                     
             });

@@ -12,14 +12,18 @@ app.use(multer({dest:"../data/files"}).single("file"));
 app.set('view engine', 'ejs');
 
 var db = require("./db").db;
+var data_manipulator = require("./data_manipulator").manipulator;
 
 app.get("/", function(request, response){    
-    db.get_statuses().then(function(statuses) {      
-      statuses.forEach(element => {
-        console.log(element)
-      });      
-      response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": statuses});
-      db.get_tasks().then(function(tasks) { console.log(tasks)});
+    db.get_statuses().then(function(statuses) {          
+      // получаем список всех существующих задач в бд
+      db.get_tasks().then(function(tasks) { 
+        let status_map = data_manipulator.get_status_map(statuses);
+        let status_names = Array.from(status_map.values());
+        tasks = manipulator.status_id_to_name(tasks, status_map);
+        console.log(tasks);
+        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": status_names, "tasks": tasks});
+      });
     }).catch((err) => {console.log(err)})
 });
 
