@@ -9,11 +9,19 @@ class DataManipulator {
     }    
 
     status_id_to_name(tasks, status_map) {        
-        tasks.forEach(task => {
-            console.log(task.STATUSES_id, status_map.get(task.STATUSES_id));
+        tasks.forEach(task => {            
             task.status = status_map.get(task.STATUSES_id);
         });
         return tasks;
+    }
+
+    get_key_by_value(searched_value, map) {
+        for (let [key, value] of map.entries()) {
+            if (value == searched_value)
+                return key;
+        }
+        console.log(111);
+        return null;
     }
 }
 

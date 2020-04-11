@@ -29,10 +29,10 @@ class DataAccessor {
         return new Promise(function(resolve, reject) {            
             con.query(sql_script, function(err, result) {
                 if (result.length == 0) {
-                    err = "Can't get status from data base." // Стоило бы потестить
+                    err = true; // Стоило бы потестить
                 }
                 if (err) {
-                    reject(err);
+                    reject(null);
                 } else {                    
                     resolve(result[0].id);
                 }
@@ -45,7 +45,7 @@ class DataAccessor {
         
         // если есть имя статуса - получить его id, иначе пустой промис
         let get_status_id = status_filter_name ? 
-            get_status_id_by_name(status_filter_name) 
+            this.get_status_id_by_name(status_filter_name) 
             : new Promise(function(resolve, reject) {resolve(null)});
         
         return get_status_id.then(function(status_id) {

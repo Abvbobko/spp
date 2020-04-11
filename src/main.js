@@ -20,8 +20,7 @@ app.get("/", function(request, response){
       db.get_tasks().then(function(tasks) { 
         let status_map = data_manipulator.get_status_map(statuses);
         let status_names = Array.from(status_map.values());
-        tasks = manipulator.status_id_to_name(tasks, status_map);
-        console.log(tasks);
+        tasks = manipulator.status_id_to_name(tasks, status_map);        
         response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": status_names, "tasks": tasks});
       });
     }).catch((err) => {console.log(err)})
@@ -40,6 +39,26 @@ app.post("/", function(request, response){
       console.log("Файл загружен");
 
     db.insert_task(text, date, status, filedata);
+});
+
+app.post("/filter", function(request, response){
+  let status_name;
+  // проблема: не видит request.body
+  console.log(`status:${request.body.status}`);
+  if (request.body.status == "all") {
+    response.redirect("/");
+  } else {
+    status_name = request.body.status;
+    db.get_statuses().then(function(statuses) {          
+      let status_map = data_manipulator.get_status_map(statuses);  
+      db.get_tasks(status_name).then(function(tasks) {         
+        let status_names = Array.from(status_map.values());
+        console.log(tasks);
+        tasks = manipulator.status_id_to_name(tasks, status_map);        
+        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": status_names, "tasks": tasks});
+      });
+    }).catch((err) => {console.log(err)})
+  }  
 });
 
 // начинаем прослушивать подключения на 3000 порту

@@ -17,13 +17,25 @@
         <label for="status">Status:</label>
         <select id="status" name="status" form="task_form">
             <% statuses.forEach(function(status) { %>
-                <option value=<%=status %>><%=status %></option>
+                <option value=<%= status %>><%= status %></option>
             <% }); %>            
         </select><br>
 
         <label for="file">File:</label>
         <input type="file" id="file" name="file"><br>
         <input type="submit" value="Add">
+    </form>
+
+    <form action="/filter" method="POST" id="filter_form" enctype="multipart/form-data">     
+        <label for="status">Status filter:</label>
+        <select id="status" name="status" form="filter_form">
+            <option selected value="all">all</option>
+            <% statuses.forEach(function(status) { %>
+                <option value=<%=status %>><%=status %></option>
+            <% }); %>            
+        </select><br>
+
+        <input type="submit" value="Show">
     </form>
 
     <div>
