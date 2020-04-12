@@ -30,8 +30,12 @@
         <label for="status">Status filter:</label>
         <select id="status" name="status" form="filter_form">
             <option selected value="all">all</option>
-            <% statuses.forEach(function(status) { %>
-                <option value=<%=status %>><%=status %></option>
+            <% statuses.forEach(function(status) { 
+                if (selected_status_name == status) { %>
+                    <option selected value=<%=status %>><%=status %></option>            
+            <%  } else { %>
+                    <option value=<%=status %>><%=status %></option>
+            <%  } %>
             <% }); %>            
         </select><br>
 

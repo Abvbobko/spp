@@ -21,7 +21,10 @@ app.get("/", function(request, response){
         let status_map = data_manipulator.get_status_map(statuses);
         let status_names = Array.from(status_map.values());
         tasks = manipulator.status_id_to_name(tasks, status_map);        
-        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": status_names, "tasks": tasks});
+        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), 
+          {"statuses": status_names, 
+          "selected_status_name": "",
+          "tasks": tasks});
       });
     }).catch((err) => {console.log(err)})
 });
@@ -54,8 +57,12 @@ app.post("/filter", function(request, response){
       db.get_tasks(status_name).then(function(tasks) {         
         let status_names = Array.from(status_map.values());
         console.log(tasks);
-        tasks = manipulator.status_id_to_name(tasks, status_map);        
-        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), {"statuses": status_names, "tasks": tasks});
+        tasks = manipulator.status_id_to_name(tasks, status_map);                
+        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), 
+          {"statuses": status_names, 
+          "selected_status_name": status_name, 
+          "tasks": tasks
+        });
       });
     }).catch((err) => {console.log(err)})
   }  
