@@ -19,8 +19,7 @@ class DataManipulator {
         for (let [key, value] of map.entries()) {
             if (value == searched_value)
                 return key;
-        }
-        console.log(111);
+        }        
         return null;
     }
 }

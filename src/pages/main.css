@@ -1,0 +1,44 @@
+body {
+    background-color: #fff4e6;
+}
+
+div {
+    display: block;
+}
+  
+.task, .task-form {
+    border: 2px solid #f76707;
+    border-radius: 5px;
+    background-color: #ffd8a8;
+    margin: 5px; 
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.task-form {
+    width: 25%;
+}
+
+.task-item {
+    margin: 3px;
+    border: 2px solid #ffec99;
+    border-radius: 5px;
+    background-color: #fff9db;
+    padding: 1em;
+}
+
+.big-text {
+    word-break: break-all;
+}
+
+.red {
+    background-color: red;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.green {
+    background-color: green;
+}

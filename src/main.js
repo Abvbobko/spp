@@ -9,8 +9,9 @@ const path = require('path');
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
 app.use(multer({dest:"../data/files"}).single("file"));
+app.use(express.static(__dirname + '/pages'));
 app.set('view engine', 'ejs');
-
+app.set('views', './pages')
 var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
 
@@ -21,7 +22,7 @@ app.get("/", function(request, response){
         let status_map = data_manipulator.get_status_map(statuses);
         let status_names = Array.from(status_map.values());
         tasks = manipulator.status_id_to_name(tasks, status_map);        
-        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), 
+        response.render("main.ejs", 
           {"statuses": status_names, 
           "selected_status_name": "",
           "tasks": tasks});
@@ -41,7 +42,9 @@ app.post("/", function(request, response){
     else
       console.log("Файл загружен");
 
-    db.insert_task(text, date, status, filedata);
+    db.insert_task(text, date, status, filedata).then(function() {
+      response.redirect("/");
+    });
 });
 
 app.post("/filter", function(request, response){
@@ -58,7 +61,7 @@ app.post("/filter", function(request, response){
         let status_names = Array.from(status_map.values());
         console.log(tasks);
         tasks = manipulator.status_id_to_name(tasks, status_map);                
-        response.render(path.resolve(__dirname, "../data/pages/main.ejs"), 
+        response.render("main.ejs", 
           {"statuses": status_names, 
           "selected_status_name": status_name, 
           "tasks": tasks

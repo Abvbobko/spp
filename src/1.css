@@ -1,0 +1,28 @@
+.box1 {
+    grid-column-start: 100;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+ }
+ * {box-sizing: border-box;}
+ .wrapper {
+     border: 2px solid #f76707;
+     border-radius: 5px;
+     background-color: #fff4e6;
+ }
+ .box {
+     border: 2px solid #ffa94d;
+     border-radius: 5px;
+     background-color: #ffd8a8;
+     padding: 1em;
+     color: #d9480f;
+ }
+ .nested {
+     border: 2px solid #ffec99;
+     border-radius: 5px;
+     background-color: #fff9db;
+     padding: 1em;
+ }
+ 

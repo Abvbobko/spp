@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <link rel="stylesheet" href="main.css">    
+</head>
+<body>
+    <div class="task-form">
+        <form action="/" method="POST" id="task_form" enctype="multipart/form-data">
+            <div class="task-item">
+                <label for="task">Task:</label><br>
+                <input type="text" id="task" name="task" maxlength="255">
+            </div>
+
+            <div class="task-item">
+                <label for="date">Date:</label><br> 
+                <input type="date" id="date" name="date">
+            </div>
+            
+            <div class="task-item">
+                <label for="status">Status:</label>
+                <select id="status" name="status" form="task_form">
+                    <% statuses.forEach(function(status) { %>
+                        <option value=<%= status %>><%= status %></option>
+                    <% }); %>            
+                </select>
+            </div>                            
+
+            <div class="task-item">
+                <label for="file">File:</label>
+                <input type="file" id="file" name="file">
+            </div>
+            <input type="submit" value="Add">
+        </form>
+    </div>
+
+    <form action="/filter" method="POST" id="filter_form" enctype="multipart/form-data">     
+        <label for="status">Status filter:</label>
+        <select id="status" name="status" form="filter_form">
+            <option selected value="all">all</option>
+            <% statuses.forEach(function(status) { 
+                if (selected_status_name == status) { %>
+                    <option selected value=<%=status %>><%=status %></option>            
+            <%  } else { %>
+                    <option value=<%=status %>><%=status %></option>
+            <%  } %>
+            <% }); %>            
+        </select><br>
+
+        <input type="submit" value="Show">
+    </form>
+
+    <div>
+        <%  tasks.forEach(function(task) {
+                let date;
+                if (task.date) {
+                    date = `${task.date.getDate()}/${task.date.getMonth()}/${task.date.getFullYear()}`;
+                } else {
+                    date = "(No date)";
+                } 
+                let file_name = task.file_name ? task.file_name : "(No file)";            
+        %>                
+            <div class="task">                            
+                <span class="task-item big-text"><%=task.text %></span>
+                <div class="task-item"> <%= date %></div>                
+                <% if (task.file_name) { %>
+                    <div class="task-item"><a href=""><%= file_name %></a></div>
+                <% } else { %>                      
+                    <div class="task-item"><%= file_name %></div>
+                <% } %>
+                <div class="task-item <%= task.status %>"><!--Status: <%= task.status %>--></div>
+            </div>
+        <% }); %> 
+    </div>
+</body>
+</html>
+
+
+
