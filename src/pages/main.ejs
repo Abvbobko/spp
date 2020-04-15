@@ -5,50 +5,58 @@
     <link rel="stylesheet" href="main.css">    
 </head>
 <body>
-    <div class="task-form">
-        <form action="/" method="POST" id="task_form" enctype="multipart/form-data">
-            <div class="task-item">
-                <label for="task">Task:</label><br>
-                <input type="text" id="task" name="task" maxlength="255">
-            </div>
+    <div class="input-block">
+        <div class="task-form">
+            <form action="/" method="POST" id="task_form" enctype="multipart/form-data">
+                <div class="task-item task-text-input task-form-item">
+                    <label for="task">Task:</label><br>
+                    <textarea type="text" id="task" name="task" maxlength="255" class="enter-field"></textarea>
+                </div>
 
-            <div class="task-item">
-                <label for="date">Date:</label><br> 
-                <input type="date" id="date" name="date">
-            </div>
-            
-            <div class="task-item">
-                <label for="status">Status:</label>
-                <select id="status" name="status" form="task_form">
-                    <% statuses.forEach(function(status) { %>
-                        <option value=<%= status %>><%= status %></option>
-                    <% }); %>            
-                </select>
-            </div>                            
+                <div class="task-item task-form-item">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" class="enter-field">
+                </div>
+                
+                <div class="task-item task-form-item">
+                    <label for="status">Status:</label><br>
+                    <select id="status" name="status" form="task_form" class="task-item select-list enter-field">
+                        <% statuses.forEach(function(status) { %>
+                            <option value=<%= status %>><%= status %> </option>
+                        <% }); %>            
+                    </select>
+                </div>                            
 
-            <div class="task-item">
-                <label for="file">File:</label>
-                <input type="file" id="file" name="file">
-            </div>
-            <input type="submit" value="Add">
-        </form>
+                <div class="task-item task-form-item">
+                    <label for="file">File:</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <input type="submit" value="Add" id="add-button" class="task-item task-form-item button">
+            </form>
+        </div>
+
+        <div>
+            <form action="/filter" method="POST" id="filter_form" enctype="multipart/form-data">     
+                <div class="task filter-form">
+                    <div class="task-item filter-form-item">
+                        <label for="status">Status filter:</label>
+                        <select id="status" name="status" form="filter_form" class="task-item select-list enter-field">
+                            <option selected value="all">all</option>
+                            <% statuses.forEach(function(status) { 
+                                if (selected_status_name == status) { %>
+                                    <option selected value=<%=status %>><%=status %></option>            
+                            <%  } else { %>
+                                    <option value=<%=status %>><%=status %></option>
+                            <%  } %>
+                            <% }); %>            
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Show" class="task-item filter-form-item button">
+                </div>
+            </form>
+        </div>
     </div>
-
-    <form action="/filter" method="POST" id="filter_form" enctype="multipart/form-data">     
-        <label for="status">Status filter:</label>
-        <select id="status" name="status" form="filter_form">
-            <option selected value="all">all</option>
-            <% statuses.forEach(function(status) { 
-                if (selected_status_name == status) { %>
-                    <option selected value=<%=status %>><%=status %></option>            
-            <%  } else { %>
-                    <option value=<%=status %>><%=status %></option>
-            <%  } %>
-            <% }); %>            
-        </select><br>
-
-        <input type="submit" value="Show">
-    </form>
 
     <div>
         <%  tasks.forEach(function(task) {

@@ -5,7 +5,27 @@ body {
 div {
     display: block;
 }
+
+.input-block {
+    display: flex;
+    align-items: flex-end;
+}
+
+input, textarea {
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1rem;
+    display: block;
+    /* padding: 0.5rem 1rem; */
+    border-radius: 5px;
+  }
   
+textarea {
+    resize: none;
+    width: 300px;
+    height: 100px;    
+    /* padding-right: 10px; */
+ }
+
 .task, .task-form {
     border: 2px solid #f76707;
     border-radius: 5px;
@@ -15,8 +35,23 @@ div {
     grid-template-columns: repeat(4, 1fr);
 }
 
+.filter-form {
+    /* width: calc(1.5*(50% - 6px)/2); */
+    margin-left: 0;
+    margin-bottom: 3px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.task-text-input {
+    margin-right: 100px;    
+}
+
 .task-form {
-    width: 25%;
+    width: 332px;
+    margin-bottom: 3px;
+    /* padding-right: 1%; */
+    /* margin-right: 73.2%; */
+    /* width: 25%; */
 }
 
 .task-item {
@@ -25,6 +60,29 @@ div {
     border-radius: 5px;
     background-color: #fff9db;
     padding: 1em;
+}
+
+.task-form-item, .filter-form-item {
+    padding: 0.5em;
+}
+
+.select-list {
+    /* width: 50%;     */
+    font-size: 1em;     
+    margin-left: 0;
+    background-color: white;
+}
+
+.enter-field {
+    border: 2px solid gray;
+}
+
+#add-button {
+    width: 98%;
+}
+
+.button:hover {
+    background-color: #ffc300;
 }
 
 .big-text {
