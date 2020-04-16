@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">    
-    <link rel="stylesheet" href="main.css">    
+    <link rel="stylesheet" href="./pages/main.css">    
 </head>
 <body>
     <div class="input-block">
@@ -71,8 +71,9 @@
             <div class="task">                            
                 <span class="task-item big-text"><%=task.text %></span>
                 <div class="task-item"> <%= date %></div>                
-                <% if (task.file_name) { %>
-                    <div class="task-item"><a href=""><%= file_name %></a></div>
+                <% if (task.file_name) { 
+                    console.log(task.text, task.name_on_server);%>
+                    <div class="task-item"><a href=<%= `/files/${task.name_on_server}` %> download=<%= file_name %>><%= file_name %></a></div>
                 <% } else { %>                      
                     <div class="task-item"><%= file_name %></div>
                 <% } %>

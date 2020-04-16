@@ -51,9 +51,9 @@ class DataAccessor {
         return get_status_id.then(function(status_id) {
             let sql_script;
             if (status_id) {
-                sql_script = `SELECT * FROM tasks WHERE statuses_id = "${status_id}"`;
+                sql_script = `SELECT * FROM tasks WHERE statuses_id = "${status_id}" ORDER BY id DESC`;
             } else {
-                sql_script = `SELECT * FROM tasks`;
+                sql_script = `SELECT * FROM tasks ORDER BY id DESC`;
             }
             return new Promise(function(resolve, reject) {            
                 con.query(sql_script, function(err, result) {
@@ -69,9 +69,10 @@ class DataAccessor {
 
     insert_task(task_text, task_date, task_status, task_file) {
         let con = this._con;
-        this.get_status_id_by_name(task_status).then(function(status_id) {
+        return this.get_status_id_by_name(task_status).then(function(status_id) {            
             let original_name = task_file != undefined ? task_file.originalname : null;
-            let file_name = task_file != undefined ? task_file.file_name : null;
+            let file_name = task_file != undefined ? task_file.filename : null;
+            console.log(file_name);            
             let date = task_date != '' ? task_date : null;
             const user = [task_text, original_name, date, status_id, file_name];
             const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";

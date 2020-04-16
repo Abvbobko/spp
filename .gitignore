@@ -1,7 +1,7 @@
 *.todo
 
 # Binary data
-data/files/
+src/static/files/
 # Logs
 logs
 *.log

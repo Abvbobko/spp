@@ -8,10 +8,10 @@ const path = require('path');
 // создаем объект приложения
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
-app.use(multer({dest:"../data/files"}).single("file"));
-app.use(express.static(__dirname + '/pages'));
+app.use(express.static(__dirname + '/static'));
+app.use(multer({dest:"./static/files"}).single("file"));
 app.set('view engine', 'ejs');
-app.set('views', './pages')
+app.set('views', './static/pages')
 var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
 
@@ -58,8 +58,7 @@ app.post("/filter", function(request, response){
     db.get_statuses().then(function(statuses) {          
       let status_map = data_manipulator.get_status_map(statuses);  
       db.get_tasks(status_name).then(function(tasks) {         
-        let status_names = Array.from(status_map.values());
-        console.log(tasks);
+        let status_names = Array.from(status_map.values());        
         tasks = manipulator.status_id_to_name(tasks, status_map);                
         response.render("main.ejs", 
           {"statuses": status_names, 
