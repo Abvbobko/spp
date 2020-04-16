@@ -71,8 +71,9 @@
             <div class="task">                            
                 <span class="task-item big-text"><%=task.text %></span>
                 <div class="task-item"> <%= date %></div>                
-                <% if (task.file_name) { 
-                    console.log(task.text, task.name_on_server);%>
+                <% if (task.file_name) {
+                    file_name = file_name.split(" ").join("_");;
+                    console.log(task.text, file_name);%>
                     <div class="task-item"><a href=<%= `/files/${task.name_on_server}` %> download=<%= file_name %>><%= file_name %></a></div>
                 <% } else { %>                      
                     <div class="task-item"><%= file_name %></div>
