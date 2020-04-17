@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">    
-    <link rel="stylesheet" href="./pages/main.css">    
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">   
+    <link rel="stylesheet" href="./pages/main.css">       
 </head>
 <body>
     <div class="input-block">
@@ -68,19 +69,23 @@
                 } 
                 let file_name = task.file_name ? task.file_name : "(No file)";            
         %>                
-            <div class="task">                            
+            <form action="/delete" method="POST" class="task" enctype="multipart/form-data">                            
                 <span class="task-item big-text"><%=task.text %></span>
                 <div class="task-item"> <%= date %></div>                
                 <% if (task.file_name) {
                     file_name = file_name.split(" ").join("_"); %>
                     <div class="task-item">
-                        <a href=<%= `/files/${task.name_on_server}` %> download=<%= file_name %>><%= file_name %></a>
+                        <a href=<%= `/files/${task.name_on_server}` %> class="big-text" download=<%= file_name %>><%= file_name %></a>
                     </div>
                 <% } else { %>                      
                     <div class="task-item"><%= file_name %></div>
                 <% } %>
-                <div class="task-item <%= task.status %>"><!--Status: <%= task.status %>--></div>
-            </div>
+                <!--div class="task task-item filter-form"-->
+                <div class="task-item <%= task.status %>"><!--Status: <%= task.status %>--></div>                                
+                    
+                <button type="submit" class="task-item fa fa-trash-o button" name="task_id" value=<%= task.id %>></button>                    
+                <!--/div-->
+            </form>            
         <% }); %> 
     </div>
 </body>

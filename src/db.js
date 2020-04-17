@@ -86,6 +86,20 @@ class DataAccessor {
         }).catch((err) => {console.log(err)});
     }
 
+    delete_task(task_id) {
+        let con = this._con;
+        return new Promise(function(resolve, reject) {     
+            const sql_script = `DELETE FROM tasks WHERE id = "${task_id}"`;
+            con.query(sql_script, function(err, result) {
+                if (err) {
+                    reject(err);
+                } else {                    
+                    resolve(result);
+                }
+            });
+        }).catch((err) => {console.log(err)}); 
+    }
+
     get_statuses() {
         const sql = "SELECT * FROM statuses";        
         let con = this._con;

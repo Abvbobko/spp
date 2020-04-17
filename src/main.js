@@ -70,5 +70,11 @@ app.post("/filter", function(request, response){
   }  
 });
 
+app.post("/delete", function(request, response) {  
+  db.delete_task(request.body.task_id).then(function() {
+    response.redirect("/");
+  });
+});
+
 // начинаем прослушивать подключения на 3000 порту
 app.listen(3000);
