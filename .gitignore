@@ -1,7 +1,11 @@
 *.todo
 
+# result js files
+public/
+
 # Binary data
 src/static/files/
+app/files/
 # Logs
 logs
 *.log

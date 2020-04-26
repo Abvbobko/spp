@@ -1,10 +1,25 @@
 {
-  "name": "rendering",
-  "version": "1.0.0",
+  "name": "task_app",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "webpack-dev-server --hot --open",
+    "build": "webpack"
+  },
   "dependencies": {
-    "ejs": "^3.0.0",
+    "ejs": "^3.1.2",
     "express": "^4.16.4",
+    "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "multer": "^1.4.2"
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "@babel/preset-react": "*",
+    "babel-loader": "*",
+    "webpack": "*",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }
