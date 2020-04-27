@@ -1,6 +1,8 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
 
+var EnterForm = require('./components/EnterForm.jsx');
+
 class UserForm extends React.Component {
     constructor(props) {
       super(props);
@@ -59,9 +61,9 @@ class UserForm extends React.Component {
                   <input type="submit" value="Отправить" />
               </form>
           );
-      }
+        }
   }
   ReactDOM.render(
-      <UserForm name="" age="0" />,
+      <EnterForm />,
       document.getElementById("app")
   )
