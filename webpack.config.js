@@ -1,5 +1,6 @@
 var path = require('path');
- 
+var ExtractTextPlugin = require ('extract-text-webpack-plugin'); 
+
 module.exports = {
     entry: "./app/client/app.jsx", // входная точка - исходный файл
     output:{
@@ -16,6 +17,10 @@ module.exports = {
                 options:{
                     presets:["@babel/preset-env", "@babel/preset-react"]    // используемые плагины
                 }
+            },
+            {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
             }
         ]
     },
@@ -23,5 +28,8 @@ module.exports = {
         historyApiFallback: {
             index: './app/client/index.html',
         }
-    }
+    },
+    plugins: [
+        new ExtractTextPlugin('bundle.css')
+    ]
 }

@@ -1,3 +1,5 @@
+//import './app.css';
+
 var ReactDOM = require('react-dom');
 var React = require('react');
 
@@ -63,6 +65,7 @@ class UserForm extends React.Component {
           );
         }
   }
+
   ReactDOM.render(
       <EnterForm />,
       document.getElementById("app")

@@ -4,9 +4,9 @@ var React = require('react');
 class TextField extends React.Component {
     render() {
         return (
-            <div>
-                <label for="task">Task:</label><br/>
-                <textarea type="text" id="task" name="task" required maxlength="255" />
+            <div className="task-item task-text-input task-form-item">
+                <label htmlFor="task">Task:</label><br/>
+                <textarea type="text" id="task" name="task" required maxLength="255" className="enter-field" />
             </div>
         );
     }    
@@ -15,9 +15,9 @@ class TextField extends React.Component {
 class DateField extends React.Component {
     render() {
         return (
-            <div>
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date" />
+            <div className="task-item task-form-item">
+                <label htmlFor="date">Date:</label>
+                <input type="date" id="date" name="date" className="enter-field" />
             </div>
         );
     }
@@ -26,9 +26,9 @@ class DateField extends React.Component {
 class StatusField extends React.Component {
     render() {
         return (
-            <div>
-                <label for="status">Status:</label><br />
-                <select id="status" name="status" form="task_form">
+            <div className="task-item task-form-item">
+                <label htmlFor="status">Status:</label><br />
+                <select id="status" name="status" className="task-item select-list enter-field">
                 </select>
             </div>   
         );
@@ -38,9 +38,9 @@ class StatusField extends React.Component {
 class FileField extends React.Component {
     render() {
         return (
-            <div>
-                <label for="file">File:</label>
-                <input type="file" id="file" name="file" />
+            <div className="task-item task-form-item"> 
+                <label htmlFor="file">File:</label>
+                <input type="file" id="file" name="file"/>
             </div>
         );
     }
@@ -49,13 +49,13 @@ class FileField extends React.Component {
 class EnterForm extends React.Component {
     render() {
         return (
-            <div>
+            <div className="task-form"> 
                 <form>
                     <TextField />
                     <DateField />
                     <StatusField />
                     <FileField />                    
-                    <input type="submit" value="Отправить" />
+                    <input type="submit" id="add-button" value="Отправить" className="task-item task-form-item button" />
                 </form>
             </div>
         );
