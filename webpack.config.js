@@ -21,7 +21,7 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: {
-            index: './app/index.html',
+            index: './app/client/index.html',
         }
     }
 }
