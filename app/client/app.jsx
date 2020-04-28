@@ -4,6 +4,8 @@ var ReactDOM = require('react-dom');
 var React = require('react');
 
 var EnterForm = require('./components/EnterForm.jsx');
+var FilterForm = require('./components/FilterForm.jsx');
+var TasksList = require('./components/TasksList.jsx');
 
 class UserForm extends React.Component {
     constructor(props) {
@@ -62,11 +64,23 @@ class UserForm extends React.Component {
                   </p>
                   <input type="submit" value="Отправить" />
               </form>
-          );
+            );
         }
-  }
+}
 
-  ReactDOM.render(
-      <EnterForm />,
+class AppPage extends React.Component {
+    render() {
+        return (
+            <div>
+                <EnterForm />
+                <FilterForm />
+                <TasksList />
+            </div>            
+        );
+    }
+}
+
+ReactDOM.render(
+      <AppPage />,
       document.getElementById("app")
-  )
+)
