@@ -72,7 +72,7 @@ class DataAccessor {
         return this.get_status_id_by_name(task_status).then(function(status_id) {            
             let original_name = task_file != undefined ? task_file.originalname : null;
             let file_name = task_file != undefined ? task_file.filename : null;
-            console.log(file_name);            
+            console.log(`file name: "${file_name}"`);            
             let date = task_date != '' ? task_date : null;
             const user = [task_text, original_name, date, status_id, file_name];
             const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";
@@ -83,7 +83,7 @@ class DataAccessor {
                         reject(err);
                     else {
                         console.log("Данные добавлены");   
-                        resolve(result.insertId); //??????????????????????/ как правильно возвращать?
+                        resolve(result.insertId); 
                     }
                 });
             });
@@ -102,6 +102,32 @@ class DataAccessor {
                 }
             });
         }).catch((err) => {console.log(err)}); 
+    }
+
+    update_task(task_id, task_text, task_date, task_status, task_file) {
+        let con = this._con;
+        return this.get_status_id_by_name(task_status).then(function(status_id) {  
+            let original_name = task_file != undefined ? task_file.originalname : null;
+            let file_name = task_file != undefined ? task_file.filename : null;
+            console.log(`file name: "${file_name}"`);            
+            let date = task_date != '' ? task_date : null;
+            const sql_script = `UPDATE tasks 
+                                    SET text = "${task_text}", 
+                                        date = "${date}",
+                                        file_name = "${original_name}",
+                                        STATUSES_id = "${status_id}", 
+                                        name_on_server = "${file_name}"
+                                WHERE id = "${task_id}"`;
+
+            con.query(sql_script, function(err, result) {
+                if (err) {
+                    reject(err);
+                } else {                    
+                    resolve(result);
+                }
+            });
+
+        }).catch((err) => {console.log(err)});
     }
 
     get_statuses() {

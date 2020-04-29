@@ -26,8 +26,6 @@ app.get("/statuses", function(request, response) {
   })
 });
 
-/// /users/:userId (req.params.userId)
-
 app.get("/tasks", function(request, response) {
   // получить все таски  
   db.get_statuses().then(function(statuses) {          
@@ -70,6 +68,7 @@ app.put("/tasks/:task_id", function(request, response) {
 });
 
 app.get("/tasks/:task_id/file", function(request, response) {
+  // можно получать файл по id таски и высылать его
   // получить файл  
 });
 
