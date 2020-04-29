@@ -30,6 +30,15 @@ app.get("/statuses", function(request, response) {
 
 app.get("/tasks", function(request, response) {
   // получить все таски  
+  db.get_statuses().then(function(statuses) {          
+    // получаем список всех существующих задач в бд
+    db.get_tasks().then(function(tasks) { 
+      let status_map = data_manipulator.get_status_map(statuses);
+      let status_names = Array.from(status_map.values());
+      tasks = manipulator.status_id_to_name(tasks, status_map);        
+      response.status(200).send({tasks: tasks})
+    });
+  }).catch((err) => {console.log(err)})
 });
 
 app.post("/tasks", function(request, response) {
