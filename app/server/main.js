@@ -42,13 +42,25 @@ app.get("/tasks", function(request, response) {
 });
 
 app.post("/tasks", function(request, response) {
-  // добавить таску (вернуть ее данные + id)
+    // добавить таску - возвращается в location /tasks/id
+    // date - dd.mm.yyyy
+    let text = request.query.task;
+    let date = request.query.date;
+    let filedata = request.query.file;
+    let status = request.query.status;   
+    if(!filedata)
+      console.log("Не было передано файлов");
+    else
+      console.log("Файл загружен");
+
+    db.insert_task(text, date, status, filedata).then(function(task_id) {
+      response.status(201).location('/tasks/' + task_id).send()
+    });
 });
 
 app.delete("/tasks/:task_id", function(request, response) {
   // удалить таску
-  db.delete_task(request.params.task_id).then(function() {
-    // ничего не отправилось??????????????????????????????????????????????????????????????????????
+  db.delete_task(request.params.task_id).then(function() {    
     response.status(204).send('Successfully deleted');
   }).catch((err) => {console.log(err)})
 });

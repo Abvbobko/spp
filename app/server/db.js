@@ -77,11 +77,15 @@ class DataAccessor {
             const user = [task_text, original_name, date, status_id, file_name];
             const sql = "INSERT INTO tasks(text, file_name, date, STATUSES_id, name_on_server) VALUES(?, ?, ?, ?, ?)";
     
-            con.query(sql, user, function(err, results) {
-                if(err) 
-                    console.log(err);
-                else 
-                    console.log("Данные добавлены");   
+            return new Promise(function(resolve, reject) {
+                con.query(sql, user, function(err, result) {
+                    if(err) 
+                        reject(err);
+                    else {
+                        console.log("Данные добавлены");   
+                        resolve(result.insertId); //??????????????????????/ как правильно возвращать?
+                    }
+                });
             });
         }).catch((err) => {console.log(err)});
     }
