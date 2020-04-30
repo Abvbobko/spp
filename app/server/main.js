@@ -60,9 +60,24 @@ app.delete("/tasks/:task_id", function(request, response) {
   // удалить таску
 
   // ДОБАВИТЬ УДАЛЕНИЕ ФАЙЛА
-  db.delete_task(request.params.task_id).then(function() {    
-    response.status(204).send('Successfully deleted');
-  }).catch((err) => {console.log(err)})
+  db.get_file_name(request.params.task_id).then(function(file_info) {    
+    let file_path = __dirname + `/files/${file_info.name_on_server}`;
+    //delete file
+
+    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
+      fs.unlink(file_path, function (err) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log('File deleted!');
+      }); 
+    }
+
+    db.delete_task(request.params.task_id).then(function() {    
+      response.status(204).send('Successfully deleted');
+    });
+  }).catch((err) => {console.log(err)});
 });
 
 app.put("/tasks/:task_id", function(request, response) {
@@ -73,7 +88,7 @@ app.get("/tasks/:task_id/file", function(request, response) {
   // получить файл  
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = __dirname + `/files/${file_info.name_on_server}`;
-    if ((Object.keys(file_info).length) || (fs.existsSync(file_path))) {
+    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
       console.log(file_info);  
       response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);
     } else {
