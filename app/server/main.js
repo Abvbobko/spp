@@ -8,8 +8,9 @@ const path = require('path');
 // создаем объект приложения
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
-//app.use(express.static(__dirname + '/static'));
-//app.use(multer({dest:"./static/files"}).single("file"));
+// тут лежат файлы (статические данные)
+app.use(express.static(__dirname + '/files'));
+app.use(multer({dest:"./files"}).single("file"));
 app.set('view engine', 'ejs');
 //app.set('views', './static/pages')
 var db = require("./db").db;
@@ -28,11 +29,9 @@ app.get("/statuses", function(request, response) {
 
 app.get("/tasks", function(request, response) {
   // получить все таски  
-  db.get_statuses().then(function(statuses) {          
-    // получаем список всех существующих задач в бд
+  db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
-      let status_map = data_manipulator.get_status_map(statuses);
-      let status_names = Array.from(status_map.values());
+      let status_map = data_manipulator.get_status_map(statuses);      
       tasks = manipulator.status_id_to_name(tasks, status_map);        
       response.status(200).send({tasks: tasks})
     });
@@ -58,6 +57,8 @@ app.post("/tasks", function(request, response) {
 
 app.delete("/tasks/:task_id", function(request, response) {
   // удалить таску
+
+  // ДОБАВИТЬ УДАЛЕНИЕ ФАЙЛА
   db.delete_task(request.params.task_id).then(function() {    
     response.status(204).send('Successfully deleted');
   }).catch((err) => {console.log(err)})
@@ -70,6 +71,8 @@ app.put("/tasks/:task_id", function(request, response) {
 app.get("/tasks/:task_id/file", function(request, response) {
   // можно получать файл по id таски и высылать его
   // получить файл  
+  let file = __dirname + '/files/1.txt';
+  response.status(200).type("multipart/form-data").download(file, "hello.txt");
 });
 
 // OLD
