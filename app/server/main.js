@@ -3,6 +3,7 @@ const express = require("express");
 const ejs = require('ejs');
 const multer  = require("multer");
 
+var fs = require('fs');
 const path = require('path'); 
     
 // создаем объект приложения
@@ -71,8 +72,20 @@ app.put("/tasks/:task_id", function(request, response) {
 app.get("/tasks/:task_id/file", function(request, response) {
   // можно получать файл по id таски и высылать его
   // получить файл  
-  let file = __dirname + '/files/1.txt';
-  response.status(200).type("multipart/form-data").download(file, "hello.txt");
+  
+  // проверить на существование файл
+  // если есть, то последние две строчки, иначе 404
+  db.get_file_name(request.params.task_id).then(function(file_info) {    
+    let file_path = __dirname + `/files/${file_info.name_on_server}`;
+    if ((Object.keys(file_info).length) || (fs.existsSync(file_path))) {
+      console.log(file_info);  
+      response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);
+    } else {
+      response.status(404).send();
+    }
+  }).catch((err) => {
+    console.log("err");    
+  });
 });
 
 // OLD

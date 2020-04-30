@@ -130,6 +130,25 @@ class DataAccessor {
         }).catch((err) => {console.log(err)});
     }
 
+    get_file_name(task_id) {
+        let con = this._con;
+        return new Promise(function(resolve, reject) {     
+            const sql_script = `SELECT file_name, name_on_server
+                                FROM tasks
+                                WHERE id = "${task_id}"`;
+
+            con.query(sql_script, function(err, result) {
+                if (err) {                   
+                    reject(err);
+                } else {                                                             
+                    result = (result.length) ? {origin_name: result[0].file_name, name_on_server: result[0].name_on_server} : {};
+                    resolve(result);                    
+                }
+            });
+
+        }).catch((err) => {console.log(err)});
+    }
+
     get_statuses() {
         const sql = "SELECT * FROM statuses";        
         let con = this._con;
