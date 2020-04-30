@@ -69,12 +69,8 @@ app.put("/tasks/:task_id", function(request, response) {
   // обновить таску  
 });
 
-app.get("/tasks/:task_id/file", function(request, response) {
-  // можно получать файл по id таски и высылать его
+app.get("/tasks/:task_id/file", function(request, response) {  
   // получить файл  
-  
-  // проверить на существование файл
-  // если есть, то последние две строчки, иначе 404
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = __dirname + `/files/${file_info.name_on_server}`;
     if ((Object.keys(file_info).length) || (fs.existsSync(file_path))) {
