@@ -4,8 +4,8 @@ var ExtractTextPlugin = require ('extract-text-webpack-plugin');
 module.exports = {
     entry: "./app/client/app.jsx", // входная точка - исходный файл
     output:{
-        path: path.resolve(__dirname, './public'),     // путь к каталогу выходных файлов - папка public
-        publicPath: '/public/',
+        path: path.resolve(__dirname, './app/static/page/'),     // путь к каталогу выходных файлов - папка public
+        publicPath: '/',
         filename: "bundle.js"       // название создаваемого файла
     },
     module:{
@@ -26,7 +26,7 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: {
-            index: './app/client/index.html',
+            index: './app/static/page/index.html',
         }
     },
     plugins: [

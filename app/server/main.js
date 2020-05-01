@@ -10,8 +10,8 @@ const path = require('path');
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
 // тут лежат файлы (статические данные)
-app.use(express.static(__dirname + '/files'));
-app.use(multer({dest:"./files"}).single("file"));
+app.use(express.static(__dirname + '/app/static'));
+app.use(multer({dest:"../static/files"}).single("file"));
 app.set('view engine', 'ejs');
 //app.set('views', './static/pages')
 var db = require("./db").db;
@@ -42,10 +42,11 @@ app.get("/tasks", function(request, response) {
 app.post("/tasks", function(request, response) {
     // добавить таску - возвращается в location /tasks/id
     // date - dd.mm.yyyy
-    let text = request.query.task;
-    let date = request.query.date;
-    let filedata = request.query.file;
-    let status = request.query.status;   
+    let text = request.body.task;    
+    let date = request.body.date;
+    let filedata = request.body.file;
+    let status = request.body.status;   
+    console.log(filedata);
     if(!filedata)
       console.log("Не было передано файлов");
     else
@@ -99,8 +100,10 @@ app.get("/tasks/:task_id/file", function(request, response) {
   });
 });
 
-// app.get("/", function(request, response){    
-// });
+app.get("/", function(request, response){    
+  let page_path = path.resolve(__dirname, "../client/index.html");
+  response.status(200).type("multipart/form-data").render(page_path);
+});
 
 // начинаем прослушивать подключения на 3000 порту
 app.listen(3000);
