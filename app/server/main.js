@@ -25,6 +25,7 @@ app.get("/statuses", function(request, response) {
     response.status(200).send({statuses: Array.from(status_map.values())})
   }).catch((err) => {
     console.log(err);
+    response.status(500).send();
   })
 });
 
@@ -36,7 +37,10 @@ app.get("/tasks", function(request, response) {
       tasks = manipulator.status_id_to_name(tasks, status_map);        
       response.status(200).send({tasks: tasks})
     });
-  }).catch((err) => {console.log(err)})
+  }).catch((err) => {
+    console.log(err)
+    response.status(500).send();
+  });
 });
 
 app.post("/tasks", function(request, response) {
@@ -54,6 +58,9 @@ app.post("/tasks", function(request, response) {
 
     db.insert_task(text, date, status, filedata).then(function(task_id) {
       response.status(201).location('/tasks/' + task_id).send()
+    }).catch((err) => {
+      console.log(err)
+      response.status(500).send();
     });
 });
 
@@ -78,7 +85,10 @@ app.delete("/tasks/:task_id", function(request, response) {
     db.delete_task(request.params.task_id).then(function() {    
       response.status(204).send('Successfully deleted');
     });
-  }).catch((err) => {console.log(err)});
+  }).catch((err) => {
+    console.log(err);
+    response.status(500).send();
+  });
 });
 
 app.put("/tasks/:task_id", function(request, response) {
@@ -97,12 +107,8 @@ app.get("/tasks/:task_id/file", function(request, response) {
     }
   }).catch((err) => {
     console.log("err");    
+    response.status(500).send();
   });
-});
-
-app.get("/", function(request, response){    
-  let page_path = path.resolve(__dirname, "../client/index.html");
-  response.status(200).type("multipart/form-data").render(page_path);
 });
 
 // начинаем прослушивать подключения на 3000 порту
