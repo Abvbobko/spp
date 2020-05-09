@@ -42,10 +42,23 @@ class ServerConnector {
     }
   }
 
+  get_task_file(task_id) {
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!________________________________тут еще подумать
+    // добавить проверки всякие
+    xhr.open('GET', SITE_PATH + `/tasks/${task_id}/file`, false);
+    xhr.send();    
+    console.log(xhr.status);
+    if (xhr.status != 200) {      
+      console.log( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+    } else {      
+      console.log(1,  JSON.parse(xhr.responseText) ); // responseText -- текст ответа.
+    }
+  }
+
 }
 
 sc = new ServerConnector(SITE_PATH);
 
-sc.get_tasks();
+sc.get_task_file(49);
 
 module.exports = { sc };
