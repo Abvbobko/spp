@@ -13,7 +13,8 @@
     "mysql": "^2.18.1",
     "react": "*",
     "react-dom": "*",
-    "style-loader": "^1.2.0"
+    "style-loader": "^1.2.0",
+    "xmlhttprequest": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

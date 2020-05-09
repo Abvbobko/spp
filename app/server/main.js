@@ -22,7 +22,7 @@ var data_manipulator = require("./data_manipulator").manipulator;
 app.get("/statuses", function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      
-    response.status(200).send({statuses: Array.from(status_map.values())})
+    response.status(200).json({statuses: Array.from(status_map.values())});
   }).catch((err) => {
     console.log(err);
     response.status(500).send();
@@ -35,7 +35,7 @@ app.get("/tasks", function(request, response) {
     db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);      
       tasks = manipulator.status_id_to_name(tasks, status_map);        
-      response.status(200).send({tasks: tasks})
+      response.status(200).json({tasks: tasks})
     });
   }).catch((err) => {
     console.log(err)

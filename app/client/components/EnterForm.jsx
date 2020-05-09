@@ -47,10 +47,17 @@ class FileField extends React.Component {
 }
 
 class EnterForm extends React.Component {
+    handleSubmit(e) {
+        e.preventDefault();
+        if(this.state.nameValid ===true && this.state.ageValid===true){
+            alert("Имя: " + this.state.name + " Возраст: " + this.state.age);
+        }
+    }
+
     render() {
         return (
             <div className="task-form"> 
-                <form>
+                <form onSubmit={this.handleSubmit}>
                     <TextField />
                     <DateField />
                     <StatusField />

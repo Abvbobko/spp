@@ -4,7 +4,7 @@ class TasksList extends React.Component {
     render() {
         return (
             <div>
-                <form action="/delete" method="POST" className="task">                            
+                <form method="POST" className="task">                            
                     <span className="task-item big-text">task.text</span>
                     <div className="task-item">date</div>                
                     <div className="task-item <%= task.status %>">Status: status</div> 
