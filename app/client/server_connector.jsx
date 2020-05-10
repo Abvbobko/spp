@@ -59,6 +59,6 @@ class ServerConnector {
 
 sc = new ServerConnector(SITE_PATH);
 
-sc.get_task_file(49);
+//sc.get_task_file(49);
 
 module.exports = { sc };

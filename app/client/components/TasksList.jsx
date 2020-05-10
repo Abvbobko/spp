@@ -9,7 +9,10 @@ class TasksList extends React.Component {
                     <div className="task-item">date</div>                
                     <div className="task-item <%= task.status %>">Status: status</div> 
                     <div className="task-item">file_name</div>                                                           
-                    <button type="submit" className="task-item fa fa-trash-o button" name="task_id"></button>                                      
+                    <div className="task task-buttons">
+                        <button type="submit" className="task-item fa fa-edit button" ></button>  
+                        <button type="submit" className="task-item fa fa-trash-o button" name="task_id"></button>                                                            
+                    </div>
                 </form>                            
             </div>
         );

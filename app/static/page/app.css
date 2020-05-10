@@ -35,6 +35,10 @@ textarea {
     grid-template-columns: repeat(5, 1fr);
 }
 
+.task-buttons {
+    grid-template-columns: repeat(2, 1fr);
+}
+
 .filter-form {
     /* width: calc(1.5*(50% - 6px)/2); */
     margin-left: 0;
