@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">   
+    <link rel="stylesheet" href="./pages/main.css">       
+</head>
+<body>
+    <div class="input-block">
+        <div class="task-form">
+            <form action="/" method="POST" id="task_form" enctype="multipart/form-data">
+                <div class="task-item task-text-input task-form-item">
+                    <label for="task">Task:</label><br>
+                    <textarea type="text" id="task" name="task" required maxlength="255" class="enter-field"></textarea>
+                </div>
+
+                <div class="task-item task-form-item">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" class="enter-field">
+                </div>
+                
+                <div class="task-item task-form-item">
+                    <label for="status">Status:</label><br>
+                    <select id="status" name="status" form="task_form" class="task-item select-list enter-field">
+                        <% statuses.forEach(function(status) { %>
+                            <option value=<%= status %>><%= status %> </option>
+                        <% }); %>            
+                    </select>
+                </div>                            
+
+                <div class="task-item task-form-item">
+                    <label for="file">File:</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <input type="submit" value="Add" id="add-button" class="task-item task-form-item button">
+            </form>
+        </div>
+
+        <div>
+            <form action="/filter" method="POST" id="filter_form" enctype="multipart/form-data">     
+                <div class="task filter-form">
+                    <div class="task-item filter-form-item">
+                        <label for="status">Status filter:</label>
+                        <select id="status" name="status" form="filter_form" class="task-item select-list enter-field">
+                            <option selected value="all">all</option>
+                            <% statuses.forEach(function(status) { 
+                                if (selected_status_name == status) { %>
+                                    <option selected value=<%=status %>><%=status %></option>            
+                            <%  } else { %>
+                                    <option value=<%=status %>><%=status %></option>
+                            <%  } %>
+                            <% }); %>            
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Show" class="task-item filter-form-item button">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <%  tasks.forEach(function(task) {
+                let date;
+                if (task.date) {
+                    date = `${task.date.getDate()}/${task.date.getMonth()}/${task.date.getFullYear()}`;
+                } else {
+                    date = "(No date)";
+                } 
+                let file_name = task.file_name ? task.file_name : "(No file)";            
+        %>                
+            <form action="/delete" method="POST" class="task" enctype="multipart/form-data">                            
+                <span class="task-item big-text"><%=task.text %></span>
+                <div class="task-item"> <%= date %></div>                
+                <% if (task.file_name) {
+                    file_name = file_name.split(" ").join("_"); %>
+                    <div class="task-item">
+                        <a href=<%= `/files/${task.name_on_server}` %> class="big-text" download=<%= file_name %>><%= file_name %></a>
+                    </div>
+                <% } else { %>                      
+                    <div class="task-item"><%= file_name %></div>
+                <% } %>
+                <!--div class="task task-item filter-form"-->
+                <div class="task-item <%= task.status %>"><!--Status: <%= task.status %>--></div>                                
+                    
+                <button type="submit" class="task-item fa fa-trash-o button" name="task_id" value=<%= task.id %>></button>                    
+                <!--/div-->
+            </form>            
+        <% }); %> 
+    </div>
+</body>
+</html>
+
+
+

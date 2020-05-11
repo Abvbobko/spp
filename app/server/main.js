@@ -1,3 +1,5 @@
+var PORT = 8080    
+
 // подключение express
 const express = require("express");
 const ejs = require('ejs');
@@ -5,7 +7,7 @@ const multer  = require("multer");
 
 var fs = require('fs');
 const path = require('path'); 
-    
+
 // создаем объект приложения
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
@@ -34,7 +36,8 @@ app.get("/tasks", function(request, response) {
   db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);      
-      tasks = manipulator.status_id_to_name(tasks, status_map);        
+      tasks = manipulator.status_id_to_name(tasks, status_map);  
+      response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
       response.status(200).json({tasks: tasks})
     });
   }).catch((err) => {
@@ -111,5 +114,5 @@ app.get("/tasks/:task_id/file", function(request, response) {
   });
 });
 
-// начинаем прослушивать подключения на 3000 порту
-app.listen(3000);
+// начинаем прослушивать подключения на 8080 порту
+app.listen(PORT);
