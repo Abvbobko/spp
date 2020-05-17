@@ -24,6 +24,7 @@ var data_manipulator = require("./data_manipulator").manipulator;
 app.get("/statuses", function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      
+    response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
     response.status(200).json({statuses: Array.from(status_map.values())});
   }).catch((err) => {
     console.log(err);

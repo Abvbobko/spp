@@ -1,6 +1,21 @@
 var React = require('react');
+var sc = require('../server_connector.jsx').sc;
 
 class FilterForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            statuses: [],
+          };          
+    }
+
+    componentDidMount(){
+        sc.get_statuses().then(
+            statuses => this.setState({ statuses: statuses.statuses })
+        );
+        // sc.get_tasks().then(data => this.setState({tasks: data }));
+    }
+
     render() {
         return (
             <div>
@@ -10,7 +25,11 @@ class FilterForm extends React.Component {
                             <label htmlFor="status">Status filter:</label>
                             <select id="status" name="status" defaultValue="all" form="filter_form" className="task-item select-list enter-field">
                                 <option value="all">all</option> 
-                                
+                                {
+                                    this.state.statuses.map(function(status){                        
+                                        return <option value={status}>{status}</option>
+                                    })    
+                                }
                             </select>
                         </div>
                         <input type="submit" value="Show" className="task-item filter-form-item button" />
