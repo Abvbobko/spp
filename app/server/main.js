@@ -50,18 +50,32 @@ app.get("/tasks", function(request, response) {
 app.post("/tasks", function(request, response) {
     // добавить таску - возвращается в location /tasks/id
     // date - dd.mm.yyyy
+    console.log("post start");
     let text = request.body.task;    
     let date = request.body.date;
-    let filedata = request.body.file;
-    let status = request.body.status;   
+    let filedata = request.file;
+    let status = request.body.status;  
+    
     console.log(filedata);
     if(!filedata)
       console.log("Не было передано файлов");
     else
       console.log("Файл загружен");
 
+      response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
     db.insert_task(text, date, status, filedata).then(function(task_id) {
-      response.status(201).location('/tasks/' + task_id).send()
+      let insert_result = {};
+      insert_result.id = task_id;
+      insert_result.text = text
+      if (filedata) {
+        insert_result.file_name = filedata.filename;
+        insert_result.name_on_server = filedata.originalname;        
+      }
+      if (date) {
+        insert_result.date = date;
+      }
+      insert_result.status = status;
+      response.status(201).location('/tasks/' + task_id).json({tasks: insert_result}).send()
     }).catch((err) => {
       console.log(err)
       response.status(500).send();
@@ -103,6 +117,8 @@ app.get("/tasks/:task_id/file", function(request, response) {
   // получить файл  
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = __dirname + `/files/${file_info.name_on_server}`;
+    console.log(file_path);
+    response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});   
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
       console.log(file_info);  
       response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);

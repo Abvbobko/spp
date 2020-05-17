@@ -4,8 +4,8 @@
 public/
 
 # Binary data
-src/static/files/
-app/static/files/
+app/server/files/
+
 # Logs
 logs
 *.log

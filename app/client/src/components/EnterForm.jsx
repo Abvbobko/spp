@@ -67,17 +67,25 @@ class FileField extends React.Component {
 }
 
 class EnterForm extends React.Component {
+    constructor() {
+        super();
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
     handleSubmit(e) {
         e.preventDefault();
-        if (this.state.nameValid === true && this.state.ageValid === true) {
-            alert("Имя: " + this.state.name + " Возраст: " + this.state.age);
-        }
+        const data = new FormData(e.target);
+    
+        fetch('http://localhost:8080/tasks', {
+        method: 'POST',
+        body: data,
+        })
     }
 
     render() {
         return (
             <div className="task-form"> 
-                <form onSubmit={this.handleSubmit}>
+                <form action="/tasks" method="POST" onSubmit={this.handleSubmit} encType="multipart/form-data">
                     <TextField />
                     <DateField />
                     <StatusField />
