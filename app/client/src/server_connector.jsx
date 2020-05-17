@@ -11,19 +11,14 @@ class ServerConnector {
   }
 
   async get_statuses() {
-    let response = await fetch(this._path + '/statuses', {method: 'GET'});            
-    if (response.ok) {      
-      let json_result = await response.json();
-      console.log("Statuses: ", json_result);    
-    } else {            
-      console.log(response.status + ": " + response.statusText); // пример вывода: 404: Not Found
-    }
+    return fetch(this._path + '/statuses').then(function(response) {     
+      return response.json();
+    });
   }
 
  get_tasks() {
-  return fetch(this._path + '/tasks', {method: 'GET', mode: 'no-cors'}).then(function(response) { 
-    console.log(response.text())
-    return response.text();
+  return fetch(this._path + '/tasks').then(function(response) {     
+    return response.json();
   });
   }
 
