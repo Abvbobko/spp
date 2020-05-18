@@ -2,12 +2,17 @@ var React = require('react');
 var sc = require('../server_connector.jsx').sc;
 
 class Task extends React.Component {
+
     render() {
         let file_block;        
         console.log(this.props);
         if (this.props.data.file_name) {
             let file_name = this.props.data.file_name.split(" ").join("_")
-            file_block = <div className="task-item"><a href={`/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}>{file_name}</a></div>                                                           
+            file_block = <div className="task-item">
+                            <a href={`http://localhost:8080/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}>
+                                {file_name}
+                            </a>
+                        </div>                                                           
         } else {
             file_block = <div class="task-item">{"(No file)"}</div>                                                           
         }

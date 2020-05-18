@@ -115,18 +115,20 @@ app.put("/tasks/:task_id", function(request, response) {
 
 app.get("/tasks/:task_id/file", function(request, response) {  
   // получить файл  
+  console.log("Try to send file");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = __dirname + `/files/${file_info.name_on_server}`;
     console.log(file_path);
     response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});   
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
       console.log(file_info);  
+      //var file = fs.readFile(file_path, 'binary');
       response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);
-    } else {
+    } else {  
       response.status(404).send();
     }
   }).catch((err) => {
-    console.log("err");    
+    console.log("err", err);    
     response.status(500).send();
   });
 });
