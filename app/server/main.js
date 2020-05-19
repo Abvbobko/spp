@@ -82,9 +82,18 @@ app.post("/tasks", function(request, response) {
     });
 });
 
+app.options("/tasks/:task_id", function(request, response){
+  console.log("OPTIONS");
+  //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
+    response.header({"access-control-allow-methods": "DELETE"});
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    console.log(response);
+    response.status(200).send();
+});
+
 app.delete("/tasks/:task_id", function(request, response) {
   // удалить таску
-
+  
   // ДОБАВИТЬ УДАЛЕНИЕ ФАЙЛА
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = __dirname + `/files/${file_info.name_on_server}`;
@@ -99,8 +108,12 @@ app.delete("/tasks/:task_id", function(request, response) {
         console.log('File deleted!');
       }); 
     }
-
-    db.delete_task(request.params.task_id).then(function() {    
+    
+    response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
+    response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  
+    db.delete_task(request.params.task_id).then(function() {          
       response.status(204).send('Successfully deleted');
     });
   }).catch((err) => {

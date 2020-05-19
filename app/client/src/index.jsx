@@ -6,6 +6,7 @@ import { EnterForm } from './components/EnterForm';
 
 var FilterForm = require('./components/FilterForm.jsx');
 var TasksList = require('./components/TasksList.jsx');
+var sc = require('./server_connector.jsx').sc;
 
 // function a(props) {
 //   const [updateState, setUpdateState] = React.useState(true);
@@ -25,25 +26,31 @@ class AppPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      updateState: true
+      updateState: true,
+      tasks: []
     };
-      
-    this.need_to_update = this.need_to_update.bind(this);
+    
+    this.callTasksUpdate = this.callTasksUpdate.bind(this);        
   }
 
-  need_to_update() {        
-    let update = !this.state.updateState;
-    this.setState({
-      updateState: update
-    });        
+  componentDidMount() {
+    this.callTasksUpdate();
+  }
+
+  callTasksUpdate() {
+    // вставить проверки
+    console.log("!!!");
+    sc.get_tasks().then(tasks => this.setState({tasks: tasks.tasks}));                
+   
   }
 
   render() {  
+    
     return (
       <div>
-          <EnterForm update={this.need_to_update} />
-          <FilterForm update={this.state.updateState}/>
-          <TasksList />
+          <EnterForm callTasksUpdate={this.callTasksUpdate} />
+          <FilterForm />
+          <TasksList tasks={this.state.tasks} callTasksUpdate={this.callTasksUpdate}/>
       </div>            
     );
   }

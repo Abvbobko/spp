@@ -1,7 +1,4 @@
-// var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-// var xhr = new XMLHttpRequest();
-
-var SERVER_PORT = 8080
+var SERVER_PORT = 3000//8080
 
 var SITE_PATH = `http://localhost:${SERVER_PORT}`;
 
@@ -22,29 +19,26 @@ class ServerConnector {
   });
   }
 
- async delete_task(task_id) {
+ delete_task(task_id) {
+   console.log("DELETE TASK SC");
     // добавить проверки всякие    
+    return fetch(this._path + `/tasks/${task_id}`, {
+        method: 'DELETE'        
+    }).then(function(response) {     
+      return ; //////////////////////
+    });
+
+    // let response = await fetch(this._path + `/tasks/${task_id}`, {method: 'DELETE'});            
+    // if (response.ok) {      
+    //   let json_result = await response.json();
+    //   // console.log("Tasks: ", json_result);    
+    // } else {            
+    //   console.log(response.status + ": " + response.statusText); }// пример вывода: 404: Not Found
     
-    let response = await fetch(this._path + `/tasks/${task_id}`, {method: 'DELETE'});            
-    if (response.ok) {      
-      let json_result = await response.json();
-      console.log("Tasks: ", json_result);    
-    } else {            
-      console.log(response.status + ": " + response.statusText); // пример вывода: 404: Not Found
-    }
   }
 
   get_task_file(task_id) {
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!________________________________тут еще подумать
-    // добавить проверки всякие
-    // xhr.open('GET', SITE_PATH + `/tasks/${task_id}/file`, false);
-    // xhr.send();    
-    // console.log(xhr.status);
-    // if (xhr.status != 200) {      
-    //   console.log( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
-    // } else {      
-    //   console.log(1,  JSON.parse(xhr.responseText) ); // responseText -- текст ответа.
-    // }
+    /////////////////////////////////////// empty
   }
 
 }

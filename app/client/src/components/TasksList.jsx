@@ -2,16 +2,26 @@ var React = require('react');
 var sc = require('../server_connector.jsx').sc;
 
 class Task extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.delete_button_click = this.delete_button_click.bind(this);
+    }
 
     
 
+    delete_button_click() {
+        console.log(this.props.data.id);
+        sc.delete_task(this.props.data.id).then(this.props.callTasksUpdate);
+    }
+
     render() {
-        let file_block;        
-        console.log(this.props);
+        // тут мб в <a> нужно полное название
+        let file_block;                
         if (this.props.data.file_name) {
             let file_name = this.props.data.file_name.split(" ").join("_")
             file_block = <div className="task-item">
-                            <a href={`http://localhost:8080/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}>
+                            <a href={`/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}> 
                                 {file_name}
                             </a>
                         </div>                                                           
@@ -30,16 +40,16 @@ class Task extends React.Component {
         } 
 
         return (
-            <form id={this.props.data.id} method="POST" className="task">                            
+            <div id={this.props.data.id} className="task">                            
                     <span className="task-item big-text">{this.props.data.text}</span>
                     {date_block}
                     <div className={`task-item ${this.props.data.status}`}></div>                     
                     {file_block}                    
                     <div className="task task-buttons">
                         <button className="task-item fa fa-edit button" ></button>  
-                        <button className="task-item fa fa-trash-o button" name="task_id"></button>                                                            
+                        <button onClick={this.delete_button_click} className="task-item fa fa-trash-o button" name="task_id"></button>                                                            
                     </div>
-            </form>     
+            </div>     
         );
     }
 }
@@ -48,24 +58,26 @@ class TasksList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            tasks: [],
-        };                    
+        // this.state = {
+        //     tasks: [],
+        // };
+                         
     }
 
-    componentDidMount() {
-        sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
-    }
+    // componentDidMount() {
+    //     sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
+    // }
 
-    componentDidUpdate() {
-        sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
-    }
+    // componentDidUpdate() {
+    //     sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
+    // }
 
-    render() {
+    render() {        
+        let callTasksUpdateFunc = this.props.callTasksUpdate;
         return (
-            <div> {
-                this.state.tasks.map(function(task){                        
-                    return <Task data={task} />
+            <div> {                
+                this.props.tasks.map(function(task){                        
+                    return <Task data={task} callTasksUpdate={callTasksUpdateFunc}/>
                 })    
             } </div>
         );
