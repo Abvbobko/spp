@@ -66,9 +66,9 @@ class FileField extends React.Component {
     }
 }
 
-class EnterForm extends React.Component {
-    constructor() {
-        super();
+export class EnterForm extends React.Component {
+    constructor(props) {
+        super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -77,9 +77,10 @@ class EnterForm extends React.Component {
         const data = new FormData(e.target);
     
         fetch('http://localhost:8080/tasks', {
-        method: 'POST',
-        body: data,
-        })
+            method: 'POST',
+            body: data,
+        }).then(this.props.update);
+        
     }
 
     render() {
@@ -97,7 +98,7 @@ class EnterForm extends React.Component {
     }
 }
 
-module.exports = EnterForm;
+//module.exports = EnterForm;
 
 
 // constructor(props) {

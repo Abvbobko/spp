@@ -3,6 +3,8 @@ var sc = require('../server_connector.jsx').sc;
 
 class Task extends React.Component {
 
+    
+
     render() {
         let file_block;        
         console.log(this.props);
@@ -14,7 +16,7 @@ class Task extends React.Component {
                             </a>
                         </div>                                                           
         } else {
-            file_block = <div class="task-item">{"(No file)"}</div>                                                           
+            file_block = <div className="task-item">{"(No file)"}</div>                                                           
         }
     
         let date_block;
@@ -48,10 +50,14 @@ class TasksList extends React.Component {
         super(props);
         this.state = {
             tasks: [],
-          };                    
+        };                    
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
+    }
+
+    componentDidUpdate() {
         sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
     }
 
