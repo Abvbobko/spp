@@ -74,10 +74,13 @@ class TasksList extends React.Component {
 
     render() {        
         let callTasksUpdateFunc = this.props.callTasksUpdate;
+        let filter_status = this.props.filterStatus;
         return (
             <div> {                
-                this.props.tasks.map(function(task){                        
-                    return <Task data={task} callTasksUpdate={callTasksUpdateFunc}/>
+                this.props.tasks.map(function(task){             
+                    if ((!filter_status) || (task.status == filter_status)) {           
+                        return <Task data={task} callTasksUpdate={callTasksUpdateFunc}/>
+                    }
                 })    
             } </div>
         );

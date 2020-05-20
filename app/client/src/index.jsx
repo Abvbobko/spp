@@ -27,10 +27,12 @@ class AppPage extends React.Component {
     super(props);
     this.state = {
       updateState: true,
-      tasks: []
+      tasks: [],
+      filterStatus: ''
     };
     
-    this.callTasksUpdate = this.callTasksUpdate.bind(this);        
+    this.callTasksUpdate = this.callTasksUpdate.bind(this);  
+    this.setFilterStatus = this.setFilterStatus.bind(this);      
   }
 
   componentDidMount() {
@@ -44,13 +46,17 @@ class AppPage extends React.Component {
    
   }
 
+  setFilterStatus(filter_status) {
+    this.setState({filterStatus: filter_status});
+  }
+
   render() {  
     
     return (
       <div>
           <EnterForm callTasksUpdate={this.callTasksUpdate} />
-          <FilterForm />
-          <TasksList tasks={this.state.tasks} callTasksUpdate={this.callTasksUpdate}/>
+          <FilterForm setFilterStatus={this.setFilterStatus}/>
+          <TasksList filterStatus={this.state.filterStatus} tasks={this.state.tasks} callTasksUpdate={this.callTasksUpdate}/>
       </div>            
     );
   }

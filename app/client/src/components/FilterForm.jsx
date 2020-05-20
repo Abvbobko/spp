@@ -6,23 +6,47 @@ class FilterForm extends React.Component {
         super(props);
         this.state = {
             statuses: [],
-          };          
+            filterValue: ""
+        };          
+        this.onChangeHandler = this.onChangeHandler.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount(){
         sc.get_statuses().then(
-            statuses => this.setState({ statuses: statuses.statuses })
+            statuses => this.setState({ 
+                statuses: statuses.statuses 
+            })
         );        
+    }
+
+    onChangeHandler(e) {       
+        let value = e.target.value;
+        if (value == "all") {
+            value = "";
+        }
+        this.setState({
+            filterValue: value
+        });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.setFilterStatus(this.state.filterValue);        
+    }
+
+    onSubmit(e) {
+        this.props.setFilterStatus(this.state.filterValue);
     }
 
     render() {
         return (
             <div>
-                <form action="/filter" method="POST" id="filter_form">     
+                <form id="filter_form" onSubmit={this.handleSubmit}>     
                     <div className="task filter-form">
                         <div className="task-item filter-form-item">
                             <label htmlFor="status">Status filter:</label>
-                            <select id="status" name="status" defaultValue="all" form="filter_form" className="task-item select-list enter-field">
+                            <select id="status" name="status" onChange={this.onChangeHandler} defaultValue="all" form="filter_form" className="task-item select-list enter-field">
                                 <option value="all">all</option> 
                                 {
                                     this.state.statuses.map(function(status){                        
