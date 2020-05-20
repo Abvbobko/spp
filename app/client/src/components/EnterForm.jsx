@@ -122,11 +122,35 @@ class StatusField extends React.Component {
 }
 
 class FileField extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ''
+        }
+        this.onChangeHandler = this.onChangeHandler.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {    
+        if (this.props.isSubmit && prevProps.isSubmit !== this.props.isSubmit) {
+            this.setState({
+                value: ''
+            })
+        }
+    }
+
+    onChangeHandler(e) {       
+        const value = e.target.value;
+        this.props.setInputState();
+        this.setState({
+            value: value
+        })
+    }
+
     render() {
         return (
             <div className="task-item task-form-item"> 
                 <label htmlFor="file">File:</label>
-                <input type="file" id="file" name="file"/>
+                <input value={this.state.value}  onChange={this.onChangeHandler} type="file" id="file" name="file"/>
             </div>
         );
     }
@@ -170,7 +194,7 @@ export class EnterForm extends React.Component {
                     <TextField isSubmit={this.state.isSubmit} setInputState={this.setInputState}/>
                     <DateField isSubmit={this.state.isSubmit} setInputState={this.setInputState}/>
                     <StatusField isSubmit={this.state.isSubmit} setInputState={this.setInputState}/>
-                    <FileField />                    
+                    <FileField isSubmit={this.state.isSubmit} setInputState={this.setInputState}/>                    
                     <input type="submit" id="add-button" value="Отправить" className="task-item task-form-item button" />
                 </form>
             </div>
