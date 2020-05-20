@@ -5,6 +5,7 @@ public/
 
 # Binary data
 app/server/files/
+app/static/files
 
 # Logs
 logs

@@ -89,6 +89,10 @@ textarea {
     background-color: #ffc300;
 }
 
+.button:active {
+    background-color: #cc5200;
+}
+
 .big-text {
     word-break: break-all;
 }

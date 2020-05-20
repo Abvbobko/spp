@@ -21,7 +21,7 @@ class Task extends React.Component {
         if (this.props.data.file_name) {
             let file_name = this.props.data.file_name.split(" ").join("_")
             file_block = <div className="task-item">
-                            <a href={`/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}> 
+                            <a href={`http://localhost:8080/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}> 
                                 {file_name}
                             </a>
                         </div>                                                           

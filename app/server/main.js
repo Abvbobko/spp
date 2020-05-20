@@ -96,7 +96,7 @@ app.delete("/tasks/:task_id", function(request, response) {
   
   // ДОБАВИТЬ УДАЛЕНИЕ ФАЙЛА
   db.get_file_name(request.params.task_id).then(function(file_info) {    
-    let file_path = __dirname + `/files/${file_info.name_on_server}`;
+    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
     //delete file
 
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
@@ -130,7 +130,7 @@ app.get("/tasks/:task_id/file", function(request, response) {
   // получить файл  
   console.log("Try to send file");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
-    let file_path = __dirname + `/files/${file_info.name_on_server}`;
+    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);//__dirname + `/files/${file_info.name_on_server}`;
     console.log(file_path);
     response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});   
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
