@@ -149,7 +149,7 @@ class DataAccessor {
                         resolve(result.insertId);
                     }
                 });
-            }
+            });
 
         }).catch((err) => {console.log(err)});
     }

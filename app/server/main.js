@@ -124,6 +124,45 @@ app.delete("/tasks/:task_id", function(request, response) {
 
 app.put("/tasks/:task_id", function(request, response) {
   // обновить таску  
+  // date - dd.mm.yyyy
+  console.log("put start");
+  let text = request.body.task;    
+  let date = request.body.date;
+  let filedata = request.file;
+  let status = request.body.status;  
+
+  // удаляем старый файл, если нужно обновить
+  if (request.body.update_file) {
+    db.get_file_name(request.params.task_id).then(function(file_info) {    
+      let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
+      //delete file
+  
+      if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
+        fs.unlink(file_path, function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+          console.log('File deleted!');
+        }); 
+      }
+    });
+  }
+  
+  console.log(filedata);
+  if(!filedata)
+    console.log("Не было передано файлов");
+  else
+    console.log("Файл загружен");
+
+    // response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
+  
+  db.update_task(request.params.task_id, text, date, status, filedata).then(function(task_id) {    
+    response.status(200).send()
+  }).catch((err) => {
+    console.log(err)
+    response.status(500).send();
+  });
 });
 
 app.get("/tasks/:task_id/file", function(request, response) {  
