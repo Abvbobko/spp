@@ -41,8 +41,9 @@ textarea {
 
 .filter-form {
     /* width: calc(1.5*(50% - 6px)/2); */
-    margin-left: 0;
+    margin-left: 0;    
     margin-bottom: 3px;
+    width: 450px;    
     grid-template-columns: repeat(2, 1fr);
 }
 

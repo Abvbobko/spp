@@ -39,8 +39,10 @@ class AppPage extends React.Component {
     
     return (
       <div>
-          <EnterForm callTasksUpdate={this.callTasksUpdate} />
-          <FilterForm setFilterStatus={this.setFilterStatus}/>
+          <div class="input-block">
+            <EnterForm callTasksUpdate={this.callTasksUpdate} />
+            <FilterForm setFilterStatus={this.setFilterStatus}/>
+          </div>
           <TasksList filterStatus={this.state.filterStatus} tasks={this.state.tasks} callTasksUpdate={this.callTasksUpdate}/>
       </div>            
     );
