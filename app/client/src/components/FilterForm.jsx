@@ -1,7 +1,7 @@
 var React = require('react');
 var sc = require('../server_connector.jsx').sc;
 
-class FilterForm extends React.Component {
+export class FilterForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,5 +62,3 @@ class FilterForm extends React.Component {
         );
     }
 }
-
-module.exports = FilterForm;

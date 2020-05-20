@@ -16,7 +16,7 @@ class Task extends React.Component {
     }
 
     render() {
-        // тут мб в <a> нужно полное название
+        
         let file_block;                
         if (this.props.data.file_name) {
             let file_name = this.props.data.file_name.split(" ").join("_")
@@ -54,23 +54,11 @@ class Task extends React.Component {
     }
 }
 
-class TasksList extends React.Component {
+export class TasksList extends React.Component {
 
     constructor(props) {
-        super(props);
-        // this.state = {
-        //     tasks: [],
-        // };
-                         
+        super(props);                        
     }
-
-    // componentDidMount() {
-    //     sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
-    // }
-
-    // componentDidUpdate() {
-    //     sc.get_tasks().then(tasks => this.setState({ tasks: tasks.tasks }));        
-    // }
 
     render() {        
         let callTasksUpdateFunc = this.props.callTasksUpdate;
@@ -86,5 +74,3 @@ class TasksList extends React.Component {
         );
     }
 }
-
-module.exports = TasksList;

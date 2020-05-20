@@ -1,4 +1,4 @@
-var SERVER_PORT = 3000//8080
+var SERVER_PORT = 3000
 
 var SITE_PATH = `http://localhost:${SERVER_PORT}`;
 
@@ -25,16 +25,8 @@ class ServerConnector {
     return fetch(this._path + `/tasks/${task_id}`, {
         method: 'DELETE'        
     }).then(function(response) {     
-      return ; //////////////////////
+      return ; 
     });
-
-    // let response = await fetch(this._path + `/tasks/${task_id}`, {method: 'DELETE'});            
-    // if (response.ok) {      
-    //   let json_result = await response.json();
-    //   // console.log("Tasks: ", json_result);    
-    // } else {            
-    //   console.log(response.status + ": " + response.statusText); }// пример вывода: 404: Not Found
-    
   }
 
   get_task_file(task_id) {

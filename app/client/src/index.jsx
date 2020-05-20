@@ -2,25 +2,12 @@ import './index.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { EnterForm } from './components/EnterForm';
+import {FilterForm} from './components/FilterForm.jsx';
+import {TasksList} from './components/TasksList.jsx';
 
-var FilterForm = require('./components/FilterForm.jsx');
-var TasksList = require('./components/TasksList.jsx');
 var sc = require('./server_connector.jsx').sc;
-
-// function a(props) {
-//   const [updateState, setUpdateState] = React.useState(true);
-//   const need_to_update = React.useCallback(() => {
-//     setUpdateState(!updateState);
-//   }, [updateState]);
-//   return (
-//     <div>
-//           <EnterForm update={this.need_to_update} />
-//           <FilterForm update={this.state.updateState}/>
-//           <TasksList />
-//       </div>
-//   );
-// }
 
 class AppPage extends React.Component {
   constructor(props) {
@@ -41,9 +28,7 @@ class AppPage extends React.Component {
 
   callTasksUpdate() {
     // вставить проверки
-    console.log("!!!");
     sc.get_tasks().then(tasks => this.setState({tasks: tasks.tasks}));                
-   
   }
 
   setFilterStatus(filter_status) {

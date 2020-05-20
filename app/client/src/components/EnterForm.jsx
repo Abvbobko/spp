@@ -1,6 +1,5 @@
 var React = require('react');
 var sc = require('../server_connector.jsx').sc;
-//var SearchPlugin = require('./SearchPlugin.jsx');
  
 class TextField extends React.Component {
     constructor(props) {
