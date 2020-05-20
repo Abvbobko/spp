@@ -106,26 +106,50 @@ class DataAccessor {
 
     update_task(task_id, task_text, task_date, task_status, task_file) {
         let con = this._con;
+        // undefined - doesn't change
+        // null - empty
         return this.get_status_id_by_name(task_status).then(function(status_id) {  
-            let original_name = task_file != undefined ? task_file.originalname : null;
-            let file_name = task_file != undefined ? task_file.filename : null;
-            console.log(`file name: "${file_name}"`);            
-            let date = task_date != '' ? task_date : null;
+            let task_text_sql;
+            if (task_text !== undefined) {
+                task_text_sql = `text = "${task_text}"`;                
+            }
+            let task_date_sql;
+            if (task_date !== undefined) {
+                let date = task_date != '' ? task_date : null;
+                task_date_sql = `date = "${date}"`;                
+            }
+            let task_file_original_sql;
+            let task_file_server_sql;
+            if (task_file !== undefined) {
+                let original_name = task_file != undefined ? task_file.originalname : null;
+                let file_name = task_file != undefined ? task_file.filename : null;
+                
+                task_file_original_sql = `file_name = "${original_name}"`;
+                task_file_server_sql = `name_on_server = "${file_name}"`;
+            }
+            let task_status_sql = `STATUSES_id = "${status_id}"`;
+            let sql_params = [
+                task_text_sql, 
+                task_date_sql, 
+                task_file_original_sql, 
+                task_file_server_sql, 
+                task_status_sql
+            ].join(", ");
+            
             const sql_script = `UPDATE tasks 
-                                    SET text = "${task_text}", 
-                                        date = "${date}",
-                                        file_name = "${original_name}",
-                                        STATUSES_id = "${status_id}", 
-                                        name_on_server = "${file_name}"
-                                WHERE id = "${task_id}"`;
+                                    SET 
+                                        ${sql_params} 
+                                    WHERE id = "${task_id}"`;
 
-            con.query(sql_script, function(err, result) {
-                if (err) {
-                    reject(err);
-                } else {                    
-                    resolve(result);
-                }
-            });
+            return new Promise(function(resolve, reject) {         
+                con.query(sql_script, function(err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {                    
+                        resolve(result.insertId);
+                    }
+                });
+            }
 
         }).catch((err) => {console.log(err)});
     }
