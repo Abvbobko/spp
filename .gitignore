@@ -3,6 +3,9 @@
 # result js files
 public/
 
+# Lab data
+reports/
+
 # Binary data
 app/server/files/
 app/static/files

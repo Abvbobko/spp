@@ -124,6 +124,8 @@ app.delete("/tasks/:task_id", function(request, response) {
 
 app.put("/tasks/:task_id", function(request, response) {
   // обновить таску  
+
+  // не тестировалось
   // date - dd.mm.yyyy
   console.log("put start");
   let text = request.body.task;    

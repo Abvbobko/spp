@@ -45,10 +45,10 @@ class Task extends React.Component {
                     {date_block}
                     <div className={`task-item ${this.props.data.status}`}></div>                     
                     {file_block}                    
-                    <div className="task task-buttons">
-                        <button className="task-item fa fa-edit button" ></button>  
+                    {/* <div className="task task-buttons"> */}
+                        {/* <button className="task-item fa fa-edit button" ></button>   */}
                         <button onClick={this.delete_button_click} className="task-item fa fa-trash-o button" name="task_id"></button>                                                            
-                    </div>
+                    {/* </div> */}
             </div>     
         );
     }

@@ -105,6 +105,7 @@ class DataAccessor {
     }
 
     update_task(task_id, task_text, task_date, task_status, task_file) {
+        // не тестировалось
         let con = this._con;
         // undefined - doesn't change
         // null - empty
