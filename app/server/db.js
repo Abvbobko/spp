@@ -3,6 +3,7 @@ const USER = "root";
 const PASSWORD = "qwerty12345678";
 
 var mysql = require('mysql');
+var bcrypt = require('bcrypt');
 
 class DataAccessor {    
 
@@ -193,6 +194,45 @@ class DataAccessor {
                     
             });
         });                
+    }
+
+    get_user_by_login(login) {
+        let con = this._con;
+        return new Promise(function(resolve, reject) {     
+            const sql_script = `SELECT *
+                                FROM users
+                                WHERE login = "${login}"`;
+
+            con.query(sql_script, function(err, result) {
+                if (err) {                   
+                    reject(err);
+                } else {                                                             
+                    result = (result.length) ? {login: result[0].login, password: result[0].password} : {};
+                    resolve(result);                    
+                }
+            });
+
+        }).catch((err) => {console.log(err)});
+    }
+
+    insert_user(login, password) {
+        let con = this._con;
+
+        let salt = bcrypt.genSaltSync(10);
+        let passwordHash = bcrypt.hashSync(password, salt)
+        const user_data = [login, passwordHash, salt];
+        const sql = "INSERT INTO users(login, password, salt) VALUES(?, ?, ?)";
+
+        return new Promise(function(resolve, reject) {
+            con.query(sql, user_data, function(err, result) {
+                if(err) 
+                    reject(err);
+                else {
+                    console.log("Пользователь добавлен");   
+                    resolve(result); 
+                }
+            });
+        }).catch((err) => {console.log(err)});
     }
 
     close_connection() {

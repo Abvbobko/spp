@@ -2,6 +2,7 @@
   "name": "task_app",
   "version": "2.0.0",
   "dependencies": {
+    "bcrypt": "*",
     "ejs": "^3.1.2",
     "express": "^4.16.4",
     "multer": "^1.4.2",

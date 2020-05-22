@@ -21,6 +21,12 @@ var data_manipulator = require("./data_manipulator").manipulator;
 
 // NEW
 
+app.use((req, res, next) => {
+  // middleware (проверять токен)
+  /////
+  next();
+});
+
 app.get("/statuses", function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      
