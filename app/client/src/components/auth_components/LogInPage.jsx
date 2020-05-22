@@ -7,7 +7,7 @@ class BackLink extends React.Component {
         return (
             <div className="back-link">                                   
                 <a href="/" className="auth-btn">
-                    Назад
+                    Back
                 </a>                                    
             </div>
         );
@@ -48,7 +48,7 @@ export class LogInForm extends React.Component {
                     <form className="login-form">
                         <LoginField />
                         <PasswordField />
-                        <input type="submit" value="Войти" className="task-item task-form-item button auth-btn auth-enter-field" />
+                        <input type="submit" value="Log in" className="task-item task-form-item button auth-btn auth-enter-field" />
                     </form>
                 </div>
             </div> </div>

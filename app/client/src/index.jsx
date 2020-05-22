@@ -8,6 +8,7 @@ import {FilterForm} from './components/FilterForm.jsx';
 import {TasksList} from './components/TasksList.jsx';
 import {AuthenticationButton} from './components/AuthenticationButton.jsx';
 import {LogInForm} from './components/auth_components/LogInPage.jsx';
+import {RegistrationForm} from './components/auth_components/RegistrationPage.jsx';
 
 var sc = require('./server_connector.jsx').sc;
 var ReactRouterDOM = require("react-router-dom");
@@ -65,7 +66,7 @@ ReactDOM.render(
       <Switch>
         <Route exact path="/" component={AppPage} />        
         <Route path="/login" component={LogInForm} />
-        {/* <Route component={NotFound} /> */}
+        <Route path="/registration" component={RegistrationForm} />
       </Switch>
     </Router>
     {/* <AppPage /> */}
