@@ -9,6 +9,11 @@ import {TasksList} from './components/TasksList.jsx';
 import {AuthenticationButton} from './components/AuthenticationButton.jsx';
 
 var sc = require('./server_connector.jsx').sc;
+var ReactRouterDOM = require("react-router-dom");
+
+const Router = ReactRouterDOM.BrowserRouter;
+const Route = ReactRouterDOM.Route;
+const Switch = ReactRouterDOM.Switch;
 
 class AppPage extends React.Component {
   constructor(props) {
@@ -55,7 +60,14 @@ class AppPage extends React.Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppPage />
+    <Router>
+      <Switch>
+        <Route exact path="/" component={AppPage} />        
+        {/* <Route path="/about" component={About} /> */}
+        {/* <Route component={NotFound} /> */}
+      </Switch>
+    </Router>
+    {/* <AppPage /> */}
   </React.StrictMode>,
   document.getElementById('root')
 );
