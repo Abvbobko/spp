@@ -1,0 +1,26 @@
+.login-form {
+    width: 330px;            
+}
+
+.auth-form {
+    align-self: center;
+}
+
+.auth-enter-field {
+    width: 300px;
+}
+
+.auth-btn {
+    width: 325px;
+}
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 200px;
+}
+
+.back-lick {
+    position:absolute;
+}
