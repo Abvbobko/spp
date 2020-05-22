@@ -6,6 +6,10 @@ div {
     display: block;
 }
 
+.auth-btn {
+    color: #f76707;
+}
+
 .input-block {
     display: flex;
     align-items: flex-end;
@@ -49,6 +53,11 @@ textarea {
 
 .task-text-input {
     margin-right: 100px;    
+}
+
+.top {
+    display: flex; 
+    justify-content: space-between;
 }
 
 .task-form {

@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { EnterForm } from './components/EnterForm';
 import {FilterForm} from './components/FilterForm.jsx';
 import {TasksList} from './components/TasksList.jsx';
+import {AuthenticationButton} from './components/AuthenticationButton.jsx';
 
 var sc = require('./server_connector.jsx').sc;
 
@@ -39,9 +40,12 @@ class AppPage extends React.Component {
     
     return (
       <div>
-          <div class="input-block">
-            <EnterForm callTasksUpdate={this.callTasksUpdate} />
-            <FilterForm setFilterStatus={this.setFilterStatus}/>
+          <div className="top">             
+            <div class="input-block">            
+              <EnterForm callTasksUpdate={this.callTasksUpdate} />
+              <FilterForm setFilterStatus={this.setFilterStatus}/>
+            </div>
+            <AuthenticationButton />
           </div>
           <TasksList filterStatus={this.state.filterStatus} tasks={this.state.tasks} callTasksUpdate={this.callTasksUpdate}/>
       </div>            
