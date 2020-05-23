@@ -207,7 +207,11 @@ class DataAccessor {
                 if (err) {                   
                     reject(err);
                 } else {                                                             
-                    result = (result.length) ? {login: result[0].login, password: result[0].password} : {};
+                    result = (result.length) ? {
+                        login: result[0].login, 
+                        password: result[0].password, 
+                        salt: result[0].salt
+                    } : {};
                     resolve(result);                    
                 }
             });

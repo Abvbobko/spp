@@ -18,13 +18,18 @@ app.set('view engine', 'ejs');
 //app.set('views', './static/pages')
 var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
-
+var auth = require("./authentication.js").manipulator;
 // NEW
 
 app.use((req, res, next) => {
   // middleware (проверять токен)
-  /////
+  
   next();
+});
+
+app.post("/test", function(request, response) {
+  console.log("test");
+  console.log(auth.create_token(100, "alexey"));
 });
 
 app.get("/statuses", function(request, response) {
