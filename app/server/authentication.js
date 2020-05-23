@@ -41,7 +41,7 @@ class JWTManipulator {
         return jwt.verify(token, SECRET_KEY, function(err, result) {
             if (err) {
                 console.log("error in token verify");
-                return err;
+                return null;
             } else {
                 console.log(result);
                 return result;

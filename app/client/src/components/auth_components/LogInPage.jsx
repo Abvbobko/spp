@@ -1,6 +1,6 @@
 import './auth.css';
 var React = require('react');
-//var sc = require('../server_connector.jsx').sc;
+var sc = require('../../server_connector.jsx').sc;
  
 class BackLink extends React.Component {
     render() {
@@ -38,6 +38,22 @@ class PasswordField extends React.Component {
 }
 
 export class LogInForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        sc.log_in(data).then(function(is_log_in) {
+            if (is_log_in) {
+                document.location = "http://localhost:3000";
+            }
+        });
+        //если ошибка, то alert
+    }
+
     render() {
         return (            
             <div>
@@ -48,7 +64,7 @@ export class LogInForm extends React.Component {
                     <form className="login-form">
                         <LoginField />
                         <PasswordField />
-                        <input type="submit" value="Log in" className="task-item task-form-item button auth-btn auth-enter-field" />
+                        <input type="submit" value="Log in" onSubmit={this.handleSubmit} className="task-item task-form-item button auth-btn auth-enter-field" />
                     </form>
                 </div>
             </div> </div>

@@ -16,6 +16,7 @@ class ServerConnector {
  get_tasks() {
   return fetch(this._path + '/tasks').then(function(response) {     
     return response.json();
+    
   });
   }
 
@@ -31,6 +32,21 @@ class ServerConnector {
 
   get_task_file(task_id) {
     /////////////////////////////////////// empty
+  }
+
+  log_in(data) {
+    return fetch(this._path + '/user', {
+      method: "GET",
+      body: data
+    }).then(function(response) {     
+      if (response.status != 200) {
+        alert(response.statusText);
+        return false;     
+      } else {
+        return true;
+      }    
+      //return response.json();
+    });
   }
 
 }

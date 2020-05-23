@@ -4,6 +4,7 @@ var PORT = 8080
 const express = require("express");
 const ejs = require('ejs');
 const multer  = require("multer");
+const cookieParser = require('cookie-parser');
 
 var fs = require('fs');
 const path = require('path'); 
@@ -12,6 +13,7 @@ const path = require('path');
 const app = express();
 // добавляет возможность доставать переменные из ответа (и загружать файлы)
 // тут лежат файлы (статические данные)
+app.use(cookieParser());
 app.use(express.static(__dirname + '/app/static'));
 app.use(multer({dest:"../static/files"}).single("file"));
 app.set('view engine', 'ejs');
@@ -21,18 +23,19 @@ var data_manipulator = require("./data_manipulator").manipulator;
 var auth = require("./authentication.js").manipulator;
 
 const middleware = () => {    
-  return (request, response, next) => {  
-      const authHeader = req.headers.authorization;
-      if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
-        auth.verify_token(token).then(function(result) {
-          request.user_id = result.id;
+  return (request, response, next) => {      
+    const token = request.cookies.token;
+    console.log(request.cookies);
+      if (token) {
+        //const token = authHeader.split(' ')[1];        
+        let user_info = auth.verify_token(token);
+        console.log(user_info);
+        if (user_info) {
+          request.user_id = user_info.id;
           next();
-        }).catch((err) => {
-          console.log(err)
+        } else {          
           response.status(401).send("Invalid token");
-        });
+        }
       } else {
         response.status(401).send("No token");
       }  
@@ -51,9 +54,9 @@ app.get("/user", function(request, response) {
   let password = request.body.password;
   auth.verify_password(login, password).then(function(is_password_correct) {
     if (is_password_correct) {
-      db.get_user_by_login(login).then(function(user_id) { 
-        let token = auth.create_token(user_id, login);
-        response.status(200).json({token: token});
+      db.get_user_by_login(login).then(function(user_info) { 
+        let token = auth.create_token(user_info.id, user_info.login);
+        response.status(200).cookie('token', token, {httpOnly: true}).end();
       });
     } else {
       console.log(err);
@@ -68,8 +71,8 @@ app.post("/user", function(request, response) {
   let login = request.body.login;    
   let password = request.body.password;
   db.insert_user(login, password).then(function(result) {
-    let token = auth.create_token(result.id, result.login);
-    response.status(200).json({token: token});
+    let token = auth.create_token(result.id, result.login);    
+    response.status(200).cookie('token', token, {httpOnly: true}).end();
     //
   }).catch((err) => {
     console.log(err);
@@ -77,7 +80,7 @@ app.post("/user", function(request, response) {
   }); 
 });
 
-app.get("/statuses", middleware(), function(request, response) {
+app.get("/statuses", function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      
     response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
@@ -92,11 +95,16 @@ app.get("/tasks", middleware(), function(request, response) {
   // получить все таски  
   db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
-      let status_map = data_manipulator.get_status_map(statuses);      
-      tasks = manipulator.status_id_to_name(tasks, status_map);  
+      let status_map = data_manipulator.get_status_map(statuses);   
+      tasks = data_manipulator.status_id_to_name(tasks, status_map);  
       response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
       response.status(200).json({tasks: tasks})
+    
+    }).catch((err) => {
+      console.log(err)
+      response.status(500).send();
     });
+
   }).catch((err) => {
     console.log(err)
     response.status(500).send();

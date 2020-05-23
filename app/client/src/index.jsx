@@ -36,7 +36,11 @@ class AppPage extends React.Component {
 
   callTasksUpdate() {
     // вставить проверки
-    sc.get_tasks().then(tasks => this.setState({tasks: tasks.tasks}));                
+    sc.get_tasks().then(tasks => 
+      this.setState({tasks: tasks.tasks})    
+    ).catch((err) => {
+        console.log(err)        
+      });
   }
 
   setFilterStatus(filter_status) {
