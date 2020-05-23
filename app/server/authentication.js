@@ -29,17 +29,24 @@ class JWTManipulator {
         }).catch((err) => {console.log(err)});
 
     }
+
+    get_login_by_token(token) {
+        // добавить проверки
+        let result = this.verify_token(token);
+        console.log(result.login);
+        return result.login;
+    }
     
-    verify_token(token) {
-        // return tokens
-        jwt.verify(token, SECRET_KEY, function(err, result) {
+    verify_token(token) {        
+        return jwt.verify(token, SECRET_KEY, function(err, result) {
             if (err) {
-                console.log(err);
+                console.log("error in token verify");
+                return err;
             } else {
                 console.log(result);
+                return result;
             }
-        }); // may be async and create to sync (add options?)
-        //consle.log(decoded.login)
+        }); 
     }
 }
 

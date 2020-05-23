@@ -208,6 +208,7 @@ class DataAccessor {
                     reject(err);
                 } else {                                                             
                     result = (result.length) ? {
+                        id: result[0].id,
                         login: result[0].login, 
                         password: result[0].password, 
                         salt: result[0].salt
@@ -217,7 +218,7 @@ class DataAccessor {
             });
 
         }).catch((err) => {console.log(err)});
-    }
+    }    
 
     insert_user(login, password) {
         let con = this._con;
@@ -232,8 +233,8 @@ class DataAccessor {
                 if(err) 
                     reject(err);
                 else {
-                    console.log("Пользователь добавлен");   
-                    resolve(result); 
+                    console.log("Пользователь добавлен");                    
+                    resolve({id: result.insertId, login: login}); 
                 }
             });
         }).catch((err) => {console.log(err)});

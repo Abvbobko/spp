@@ -19,26 +19,65 @@ app.set('view engine', 'ejs');
 var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
 var auth = require("./authentication.js").manipulator;
-// NEW
 
-app.use((req, res, next) => {
-  // middleware (проверять токен)
-  
-  next();
-});
+const middleware = () => {    
+  return (request, response, next) => {  
+      const authHeader = req.headers.authorization;
+      if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        auth.verify_token(token).then(function(result) {
+          request.user_id = result.id;
+          next();
+        }).catch((err) => {
+          console.log(err)
+          response.status(401).send("Invalid token");
+        });
+      } else {
+        response.status(401).send("No token");
+      }  
+  }
+};
 
 app.post("/test", function(request, response) {
   console.log("test");
   console.log(auth.create_token(100, "alexey"));
 });
 
-app.post("/user", function(request, response) {
-  console.log("test");
-  //auth.verify_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwLCJsb2dpbiI6ImFsZXhleSIsImlhdCI6MTU5MDI0ODc4OCwiZXhwIjoxNTkwMjUyMzg4fQ.bSeCqrf6mTPMc4ibbtusZDY59XybDJIkl9HCUSmFupk");
-  // вернуть токен
+app.get("/user", function(request, response) {
+  // вход юзера
+  console.log("get user");
+  let login = request.body.login;    
+  let password = request.body.password;
+  auth.verify_password(login, password).then(function(is_password_correct) {
+    if (is_password_correct) {
+      db.get_user_by_login(login).then(function(user_id) { 
+        let token = auth.create_token(user_id, login);
+        response.status(200).json({token: token});
+      });
+    } else {
+      console.log(err);
+      response.status(404).send("Login or password is incorrect.");
+    }
+  });
 });
 
-app.get("/statuses", function(request, response) {
+app.post("/user", function(request, response) {
+  // регистрация юзера
+  console.log("post user");
+  let login = request.body.login;    
+  let password = request.body.password;
+  db.insert_user(login, password).then(function(result) {
+    let token = auth.create_token(result.id, result.login);
+    response.status(200).json({token: token});
+    //
+  }).catch((err) => {
+    console.log(err);
+    response.status(403).send();
+  }); 
+});
+
+app.get("/statuses", middleware(), function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      
     response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
@@ -49,7 +88,7 @@ app.get("/statuses", function(request, response) {
   })
 });
 
-app.get("/tasks", function(request, response) {
+app.get("/tasks", middleware(), function(request, response) {
   // получить все таски  
   db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
@@ -64,7 +103,7 @@ app.get("/tasks", function(request, response) {
   });
 });
 
-app.post("/tasks", function(request, response) {
+app.post("/tasks", middleware(), function(request, response) {
     // добавить таску - возвращается в location /tasks/id
     // date - dd.mm.yyyy
     console.log("post start");
@@ -99,7 +138,7 @@ app.post("/tasks", function(request, response) {
     });
 });
 
-app.options("/tasks/:task_id", function(request, response){
+app.options("/tasks/:task_id", middleware(), function(request, response){
   console.log("OPTIONS");
   //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
     response.header({"access-control-allow-methods": "DELETE"});
@@ -108,7 +147,7 @@ app.options("/tasks/:task_id", function(request, response){
     response.status(200).send();
 });
 
-app.delete("/tasks/:task_id", function(request, response) {
+app.delete("/tasks/:task_id", middleware(), function(request, response) {
   // удалить таску
   
   // ДОБАВИТЬ УДАЛЕНИЕ ФАЙЛА
@@ -139,7 +178,7 @@ app.delete("/tasks/:task_id", function(request, response) {
   });
 });
 
-app.put("/tasks/:task_id", function(request, response) {
+app.put("/tasks/:task_id", middleware(), function(request, response) {
   // обновить таску  
 
   // не тестировалось
@@ -184,7 +223,7 @@ app.put("/tasks/:task_id", function(request, response) {
   });
 });
 
-app.get("/tasks/:task_id/file", function(request, response) {  
+app.get("/tasks/:task_id/file", middleware(), function(request, response) {  
   // получить файл  
   console.log("Try to send file");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
