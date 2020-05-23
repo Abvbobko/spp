@@ -32,6 +32,12 @@ app.post("/test", function(request, response) {
   console.log(auth.create_token(100, "alexey"));
 });
 
+app.post("/user", function(request, response) {
+  console.log("test");
+  //auth.verify_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwLCJsb2dpbiI6ImFsZXhleSIsImlhdCI6MTU5MDI0ODc4OCwiZXhwIjoxNTkwMjUyMzg4fQ.bSeCqrf6mTPMc4ibbtusZDY59XybDJIkl9HCUSmFupk");
+  // вернуть токен
+});
+
 app.get("/statuses", function(request, response) {
   db.get_statuses().then(function(statuses) {
     let status_map = data_manipulator.get_status_map(statuses);      

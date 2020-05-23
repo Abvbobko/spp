@@ -30,13 +30,18 @@ class JWTManipulator {
 
     }
     
-    verify_token() {}
+    verify_token(token) {
+        // return tokens
+        jwt.verify(token, SECRET_KEY, function(err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+            }
+        }); // may be async and create to sync (add options?)
+        //consle.log(decoded.login)
+    }
 }
-
-// проверка пароля юзера
-// if (bcrypt.hashSync(passwordEnteredByUser, salt) === rows[0].password) {
-//     // да, это работает
-//   }
 
 manipulator = new JWTManipulator();
 
