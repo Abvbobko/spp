@@ -34,9 +34,11 @@ const middleware = () => {
           request.user_id = user_info.id;
           next();
         } else {          
+          console.log("Invalid token");
           response.status(401).send("Invalid token");
         }
       } else {
+        console.log("No token");
         response.status(401).send("No token");
       }  
   }
@@ -47,7 +49,7 @@ app.post("/test", function(request, response) {
   console.log(auth.create_token(100, "alexey"));
 });
 
-app.get("/user", function(request, response) {
+app.post("/login", function(request, response) {
   // вход юзера
   console.log("get user");
   let login = request.body.login;    
@@ -59,13 +61,13 @@ app.get("/user", function(request, response) {
         response.status(200).cookie('token', token, {httpOnly: true}).end();
       });
     } else {
-      console.log(err);
-      response.status(404).send("Login or password is incorrect.");
+      
+      response.status(404).send();
     }
   });
 });
 
-app.post("/user", function(request, response) {
+app.post("/registration", function(request, response) {
   // регистрация юзера
   console.log("post user");
   let login = request.body.login;    
@@ -93,6 +95,7 @@ app.get("/statuses", function(request, response) {
 
 app.get("/tasks", middleware(), function(request, response) {
   // получить все таски  
+  console.log("Get tasks");
   db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);   

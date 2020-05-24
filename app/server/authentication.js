@@ -22,8 +22,10 @@ class JWTManipulator {
 
     verify_password(login, password) {
         return db.get_user_by_login(login).then(function(user_info) {
-            if (bcrypt.hashSync(password, user_info.salt) === user_info.password) {
-                return true;
+            if (user_info) {
+                if (bcrypt.hashSync(password, user_info.salt) === user_info.password) {
+                    return true;
+                }
             }
             return false;
         }).catch((err) => {console.log(err)});

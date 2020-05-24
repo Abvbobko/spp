@@ -34,8 +34,8 @@ class PasswordField extends React.Component {
     render() {
         return (
             <div className="task-item task-text-input task-form-item">
-                <label htmlFor="password">{this.props.labelText + ":"}</label><br/>
-                <input type="password" id="password" name="password" required className="enter-field auth-enter-field" />
+                <label htmlFor={this.props.name}>{this.props.labelText + ":"}</label><br/>
+                <input type="password" id={this.props.name} name={this.props.name} required className="enter-field auth-enter-field" />
             </div>
         );
     } 
@@ -51,8 +51,8 @@ export class RegistrationForm extends React.Component {
                 <div className="task-form auth-form"> 
                     <form className="login-form">
                         <LoginField />
-                        <PasswordField labelText={"Password"}/>
-                        <PasswordField labelText={"Repeat password"}/>
+                        <PasswordField name={"password"} labelText={"Password"}/>
+                        <PasswordField name={"repeat_password"} labelText={"Repeat password"}/>
                         <input type="submit" value="Sign up" className="task-item task-form-item button auth-btn auth-enter-field" />
                     </form>
                 </div>

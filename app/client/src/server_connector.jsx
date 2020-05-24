@@ -14,7 +14,8 @@ class ServerConnector {
   }
 
  get_tasks() {
-  return fetch(this._path + '/tasks').then(function(response) {     
+  return fetch(this._path + '/tasks').then(function(response) { 
+    console.log(response.status);    
     return response.json();
     
   });
@@ -35,15 +36,15 @@ class ServerConnector {
   }
 
   log_in(data) {
-    return fetch(this._path + '/user', {
-      method: "GET",
+    return fetch(this._path + '/login', {
+      method: "POST",
       body: data
     }).then(function(response) {     
       if (response.status != 200) {
-        alert(response.statusText);
-        return false;     
+        //alert(response.statusText);        
+        return "Login or password is incorrect.";     
       } else {
-        return true;
+        return null;
       }    
       //return response.json();
     });

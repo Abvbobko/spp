@@ -46,9 +46,14 @@ export class LogInForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
-        sc.log_in(data).then(function(is_log_in) {
-            if (is_log_in) {
-                document.location = "http://localhost:3000";
+        console.log("send data");
+        sc.log_in(data).then(function(err) {
+            if (err) {
+                console.log("errrorrr");
+                alert(err);
+            } else {
+                console.log("ok");
+                window.location = "http://localhost:3000";
             }
         });
         //если ошибка, то alert
@@ -61,10 +66,10 @@ export class LogInForm extends React.Component {
             <div className="auth-page">
                 
                 <div className="task-form auth-form"> 
-                    <form className="login-form">
+                    <form className="login-form"  onSubmit={this.handleSubmit}>
                         <LoginField />
                         <PasswordField />
-                        <input type="submit" value="Log in" onSubmit={this.handleSubmit} className="task-item task-form-item button auth-btn auth-enter-field" />
+                        <input type="submit" value="Log in" className="task-item task-form-item button auth-btn auth-enter-field" />
                     </form>
                 </div>
             </div> </div>

@@ -206,13 +206,13 @@ class DataAccessor {
             con.query(sql_script, function(err, result) {
                 if (err) {                   
                     reject(err);
-                } else {                                                             
+                } else {                                                                                 
                     result = (result.length) ? {
                         id: result[0].id,
                         login: result[0].login, 
                         password: result[0].password, 
                         salt: result[0].salt
-                    } : {};
+                    } : null;
                     resolve(result);                    
                 }
             });
