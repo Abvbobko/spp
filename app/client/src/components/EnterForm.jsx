@@ -168,11 +168,8 @@ export class EnterForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
-    
-        fetch('/tasks', {
-            method: 'POST',
-            body: data,
-        }).then(this.props.callTasksUpdate);
+        
+        sc.post_task(data).then(this.props.callTasksUpdate);
         
         this.setState({
             isSubmit: true

@@ -1,6 +1,6 @@
 import './auth.css';
 var React = require('react');
-//var sc = require('../server_connector.jsx').sc;
+var sc = require('../../server_connector.jsx').sc;
  
 class BackLink extends React.Component {
     render() {
@@ -42,6 +42,28 @@ class PasswordField extends React.Component {
 }
 
 export class RegistrationForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        if (data.get('password') != data.get('repeat_password')) {
+            alert("Passwords don't match");
+        } else {
+            sc.sign_up(data).then(function(err) {
+                if (err) {                
+                    alert(err);
+                } else {
+                    console.log("ok");
+                    window.location = "http://localhost:3000";
+                }
+            });   
+        }             
+    }
+
     render() {
         return (            
             <div>
@@ -49,7 +71,7 @@ export class RegistrationForm extends React.Component {
             <div className="auth-page">
                 
                 <div className="task-form auth-form"> 
-                    <form className="login-form">
+                    <form className="login-form" onSubmit={this.handleSubmit}>
                         <LoginField />
                         <PasswordField name={"password"} labelText={"Password"}/>
                         <PasswordField name={"repeat_password"} labelText={"Repeat password"}/>

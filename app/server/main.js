@@ -35,11 +35,11 @@ const middleware = () => {
           next();
         } else {          
           console.log("Invalid token");
-          response.status(401).send("Invalid token");
+          response.status(401).send("401 You must log in to the system");
         }
       } else {
         console.log("No token");
-        response.status(401).send("No token");
+        response.status(401).send("401 You must log in to the system");
       }  
   }
 };

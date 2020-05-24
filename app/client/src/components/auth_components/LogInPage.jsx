@@ -66,7 +66,7 @@ export class LogInForm extends React.Component {
             <div className="auth-page">
                 
                 <div className="task-form auth-form"> 
-                    <form className="login-form"  onSubmit={this.handleSubmit}>
+                    <form className="login-form" onSubmit={this.handleSubmit}>
                         <LoginField />
                         <PasswordField />
                         <input type="submit" value="Log in" className="task-item task-form-item button auth-btn auth-enter-field" />
