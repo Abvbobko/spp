@@ -12,8 +12,6 @@ const path = require('path');
 const app = express();
 
 app.use(cookieParser());
-
-// static data is located here
 app.use(express.static(__dirname + '/app/static'));
 app.use(multer({dest:"../static/files"}).single("file"));
 // app.set('view engine', 'ejs');
@@ -22,7 +20,40 @@ const db = require("./db").db;
 const data_manipulator = require("./data_manipulator").manipulator;
 const auth = require("./authentication.js").manipulator;
 
-const middleware = () => {    
+const server = http.createServer(app);
+const io = socketio(server); // если не будет рабоать, то попробовать добавить app port 
+
+io.on("connection", socket => {
+  console.log("client is connected");
+
+  socket.on("disconnect", () => {
+    console.log("client is disconnected");
+  });
+});
+
+const statusesNsp = io.of("/statuses");
+statusesNsp.on("connection", socket => {
+  socket.on("getStatuses", () => {
+    console.log("Get statuses");
+    db.get_statuses().then(function(statuses) {
+      let status_map = data_manipulator.get_status_map(statuses);      
+      let response = {
+        status: 200, 
+        statuses: Array.from(status_map.values())
+      }
+      socket.emit("statuses", response);      
+    }).catch((err) => {
+      console.log(err.message);
+      let response = {
+        status: 500,
+        message: err.message
+      }      
+      socket.emit("statuses", response);            
+    })
+  });
+});
+
+const middleware = () => {    //////////////////////////////////////////////////
   console.log("Check user's token");
   return (request, response, next) => {      
     const token = request.cookies.token;    
@@ -42,7 +73,7 @@ const middleware = () => {
   }
 };
 
-app.post("/users/login", function(request, response) {
+app.post("/users/login", function(request, response) {  //////////////////////////////////////////////////
   // user login  
   console.log("LogIn");
   let login = request.body.login;    
@@ -59,7 +90,7 @@ app.post("/users/login", function(request, response) {
   });
 });
 
-app.post("/users/registration", function(request, response) {
+app.post("/users/registration", function(request, response) {  //////////////////////////////////////////////////
   // user registration
   console.log("Registrate user");
   let login = request.body.login;    
@@ -73,19 +104,7 @@ app.post("/users/registration", function(request, response) {
   }); 
 });
 
-app.get("/statuses", function(request, response) {
-  console.log("Get statuses");
-  db.get_statuses().then(function(statuses) {
-    let status_map = data_manipulator.get_status_map(statuses);      
-    //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
-    response.status(200).json({statuses: Array.from(status_map.values())});
-  }).catch((err) => {
-    console.log(err);
-    response.status(500).send();
-  })
-});
-
-app.get("/tasks", middleware(), function(request, response) {
+app.get("/tasks", middleware(), function(request, response) {  //////////////////////////////////////////////////
   // get all tasks  
   console.log("Get tasks");
   db.get_statuses().then(function(statuses) {              
@@ -106,7 +125,7 @@ app.get("/tasks", middleware(), function(request, response) {
   });
 });
 
-app.post("/tasks", middleware(), function(request, response) {
+app.post("/tasks", middleware(), function(request, response) {  //////////////////////////////////////////////////
     // add new task    
     console.log("Add new task");
     let text = request.body.task;    
@@ -140,7 +159,7 @@ app.post("/tasks", middleware(), function(request, response) {
     });
 });
 
-app.delete("/tasks/:task_id", middleware(), function(request, response) {
+app.delete("/tasks/:task_id", middleware(), function(request, response) { //////////////////////////////////////////////////
   // delete task 
   console.log("Delete task");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
@@ -169,7 +188,7 @@ app.delete("/tasks/:task_id", middleware(), function(request, response) {
   });
 });
 
-app.get("/tasks/:task_id/file", middleware(), function(request, response) {  
+app.get("/tasks/:task_id/file", middleware(), function(request, response) {    //////////////////////////////////////////////////
   // get file  
   console.log("Send file to client");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
@@ -188,4 +207,4 @@ app.get("/tasks/:task_id/file", middleware(), function(request, response) {
   });
 });
 
-app.listen(PORT);
+server.listen(PORT);
