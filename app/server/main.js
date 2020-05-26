@@ -41,7 +41,7 @@ statusesNsp.on("connection", socket => {
         status: 200, 
         statuses: Array.from(status_map.values())
       }
-      socket.emit("statuses", response);      
+      socket.emit("getStatuses", response);      
     }).catch((err) => {
       console.log(err.message);
       let response = {
@@ -56,7 +56,28 @@ statusesNsp.on("connection", socket => {
 const usersNsp = io.of("/users");
 usersNsp.on("connection", socket => {
   socket.on("login", data => {
-    
+    console.log("login");
+    let login = data.login;    
+    let password = data.password;
+    auth.verify_password(login, password).then(function(is_password_correct) {      
+      if (is_password_correct) {        
+        db.get_user_by_login(login).then(function(user_info) { 
+          let token = auth.create_token(user_info.id, user_info.login);
+          let response = {
+            status: 200,
+            token: token,
+            message: "Successfully login"
+          };                   
+          socket.emit("login", response); 
+        });
+      } else {
+        let response = {
+          status: 404,
+          message: "Not found"
+        }
+        socket.emit("login", response);                       
+      }    
+    });
   });
 
   socket.on("registration", data => {
@@ -149,10 +170,8 @@ app.get("/tasks", middleware(), function(request, response) {  /////////////////
   db.get_statuses().then(function(statuses) {              
     db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);   
-      tasks = data_manipulator.status_id_to_name(tasks, status_map);  
-      //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
+      tasks = data_manipulator.status_id_to_name(tasks, status_map);           
       response.status(200).json({tasks: tasks})
-    
     }).catch((err) => {
       console.log(err)
       response.status(500).send();
@@ -178,7 +197,6 @@ app.post("/tasks", middleware(), function(request, response) {  ////////////////
     else
       console.log("Файл загружен");
 
-      //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
     db.insert_task(text, date, status, filedata).then(function(task_id) {
       let insert_result = {};
       insert_result.id = task_id;
@@ -213,11 +231,7 @@ app.delete("/tasks/:task_id", middleware(), function(request, response) { //////
         console.log('File deleted!');
       }); 
     }
-    
-    // response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
-    // response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    // response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  
+
     db.delete_task(request.params.task_id).then(function() {          
       response.status(204).send('Successfully deleted');
     });
@@ -232,8 +246,7 @@ app.get("/tasks/:task_id/file", middleware(), function(request, response) {    /
   console.log("Send file to client");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
-    console.log(file_path);
-    //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});   
+    console.log(file_path);    
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
       console.log(file_info);        
       response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);
