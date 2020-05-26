@@ -60,34 +60,27 @@ class ServerConnector {
     /////////////////////////////////////// empty
   }
 
-  log_in(data) {
+  auth_command(command, data) {
     console.log(data.login)
-    auth_socket.emit("login", data);
+    auth_socket.emit(command, data);
     return new Promise(function(resolve, reject) {  
-      auth_socket.on("login", response => {
+      auth_socket.on(command, response => {
         if (response.status == 200) { 
           console.log(response.token);
           resolve(null);
         } else {
-          reject(`${response.status}. ${response.message}`);
+          resolve(`${response.status}. ${response.message}`);
         }
       });
     });
   }
 
+  log_in(data) {
+    return this.auth_command("login", data);    
+  }
+
   sign_up(data) {
-    console.log(data.login)
-    auth_socket.emit("registration", data);
-    return new Promise(function(resolve, reject) {  
-      auth_socket.on("registration", response => {
-        if (response.status == 200) { 
-          //console.log(response.token);
-          resolve(null);
-        } else {
-          reject(`${response.status}. ${response.message}`);
-        }
-      });
-    });
+    return this.auth_command("registration", data);
   }
 
 }

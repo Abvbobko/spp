@@ -85,7 +85,7 @@ usersNsp.on("connection", socket => {
     console.log("Registrate user");
     let login = data.login;    
     let password = data.password;
-    db.insert_user(login, password).then(function(result) {
+    db.insert_user(login, password).then(function(result) {      
       let token = auth.create_token(result.id, result.login);    
       let response = {
         status: 200,
@@ -98,7 +98,7 @@ usersNsp.on("connection", socket => {
       console.log(err);
       let response = {
         status: 403,
-        message: err.message
+        message: "Error in registration. Please, check your data and try again."
       }
       socket.emit("registration", response);             
     });

@@ -55,14 +55,13 @@ export class LogInForm extends React.Component {
         sc.log_in(login_info).then(function(err) {
             console.log("send login");
             if (err) {
-                console.log("errrorrr");
+                console.log("error in login");
                 alert(err);
             } else {
-                console.log("ok");                
+                console.log("login is ok");                
                 window.location = "http://localhost:3000";
             }
-        });
-        //если ошибка, то alert
+        });        
     }
 
     render() {

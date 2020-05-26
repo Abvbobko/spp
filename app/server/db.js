@@ -179,7 +179,7 @@ class DataAccessor {
 
         return new Promise(function(resolve, reject) {
             con.query(sql, user_data, function(err, result) {
-                if(err) 
+                if (err) 
                     reject(err);
                 else {              
                     resolve({id: result.insertId, login: login}); 
