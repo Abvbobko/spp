@@ -59,6 +59,7 @@ usersNsp.on("connection", socket => {
     console.log("login");
     let login = data.login;    
     let password = data.password;
+    console.log(`${login} - ${password}`);
     auth.verify_password(login, password).then(function(is_password_correct) {      
       if (is_password_correct) {        
         db.get_user_by_login(login).then(function(user_info) { 
@@ -103,13 +104,6 @@ usersNsp.on("connection", socket => {
     });
   });
 });
-
-
-app.post("/users/registration", function(request, response) {  //////////////////////////////////////////////////
-  // user registration
-   
-});
-
 
 const tasksNsp = io.of("/tasks");
 
@@ -158,7 +152,7 @@ tasksNsp.on("connection", spcket => {
   });
 });
 
-app.get("/tasks", middleware(), function(request, response) {  //////////////////////////////////////////////////
+app.get("/tasks", /*middleware(),*/ function(request, response) {  //////////////////////////////////////////////////
   // get all tasks  
   console.log("Get tasks");
   db.get_statuses().then(function(statuses) {              
@@ -177,7 +171,7 @@ app.get("/tasks", middleware(), function(request, response) {  /////////////////
   });
 });
 
-app.post("/tasks", middleware(), function(request, response) {  //////////////////////////////////////////////////
+app.post("/tasks", /*middleware(),*/ function(request, response) {  //////////////////////////////////////////////////
     // add new task    
     console.log("Add new task");
     let text = request.body.task;    
@@ -210,7 +204,7 @@ app.post("/tasks", middleware(), function(request, response) {  ////////////////
     });
 });
 
-app.delete("/tasks/:task_id", middleware(), function(request, response) { //////////////////////////////////////////////////
+app.delete("/tasks/:task_id", /*middleware(),*/ function(request, response) { //////////////////////////////////////////////////
   // delete task 
   console.log("Delete task");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
@@ -235,7 +229,7 @@ app.delete("/tasks/:task_id", middleware(), function(request, response) { //////
   });
 });
 
-app.get("/tasks/:task_id/file", middleware(), function(request, response) {    //////////////////////////////////////////////////
+app.get("/tasks/:task_id/file", /*middleware(),*/ function(request, response) {    //////////////////////////////////////////////////
   // get file  
   console.log("Send file to client");
   db.get_file_name(request.params.task_id).then(function(file_info) {    

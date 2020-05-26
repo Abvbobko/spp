@@ -1,6 +1,7 @@
 import './auth.css';
+import sc from '../../server_connector.jsx';
+
 var React = require('react');
-var sc = require('../../server_connector.jsx').sc;
  
 class BackLink extends React.Component {
     render() {
@@ -46,13 +47,18 @@ export class LogInForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
-        console.log("send data");
-        sc.log_in(data).then(function(err) {
+        const login_info = {
+            login: data.get("login"),
+            password: data.get("password")
+        }        
+    
+        sc.log_in(login_info).then(function(err) {
+            console.log("send login");
             if (err) {
                 console.log("errrorrr");
                 alert(err);
             } else {
-                console.log("ok");
+                console.log("ok");                
                 window.location = "http://localhost:3000";
             }
         });

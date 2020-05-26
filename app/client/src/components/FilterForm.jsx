@@ -1,5 +1,6 @@
+import sc from '../server_connector.jsx';
+
 var React = require('react');
-var sc = require('../server_connector.jsx').sc;
 
 export class FilterForm extends React.Component {
     constructor(props) {

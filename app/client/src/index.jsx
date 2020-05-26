@@ -10,7 +10,8 @@ import {AuthenticationButton} from './components/AuthenticationButton.jsx';
 import {LogInForm} from './components/auth_components/LogInPage.jsx';
 import {RegistrationForm} from './components/auth_components/RegistrationPage.jsx';
 
-var sc = require('./server_connector.jsx').sc;
+import sc from './server_connector.jsx';
+
 var ReactRouterDOM = require("react-router-dom");
 
 const Router = ReactRouterDOM.BrowserRouter;
@@ -52,7 +53,7 @@ class AppPage extends React.Component {
     return (
       <div>
           <div className="top">             
-            <div class="input-block">            
+            <div className="input-block">            
               <EnterForm callTasksUpdate={this.callTasksUpdate} />
               <FilterForm setFilterStatus={this.setFilterStatus}/>
             </div>

@@ -1,7 +1,10 @@
-var SERVER_PORT = 3000
+import io from "socket.io-client";
 
+var SERVER_PORT = 3000;
 var SITE_PATH = `http://localhost:${SERVER_PORT}`;
 var LOGIN_IS_NECESSARY = "You must LogIn to the system";
+
+const auth_socket = io("http://localhost:8080/users");
 
 class ServerConnector {
   constructor(path) {
@@ -58,32 +61,32 @@ class ServerConnector {
   }
 
   log_in(data) {
-    return fetch(this._path + '/users/login', {
-      method: "POST",
-      body: data
-    }).then(function(response) {     
-      if (response.status != 200) {
-        //alert(response.statusText);        
-        return "Login or password is incorrect.";     
-      } else {
-        return null;
-      }    
-      //return response.json();
+    console.log(data.login)
+    auth_socket.emit("login", data);
+    return new Promise(function(resolve, reject) {  
+      auth_socket.on("login", response => {
+        if (response.status == 200) { 
+          console.log(response.token);
+          resolve(null);
+        } else {
+          reject(`${response.status}. ${response.message}`);
+        }
+      });
     });
   }
 
   sign_up(data) {
-    return fetch(this._path + '/users/registration', {
-      method: "POST",
-      body: data
-    }).then(function(response) {     
-      if (response.status != 200) {
-        //alert(response.statusText);        
-        return "Check the entered data. Perhaps a user with this login already exists.";     
-      } else {
-        return null;
-      }    
-      //return response.json();
+    console.log(data.login)
+    auth_socket.emit("registration", data);
+    return new Promise(function(resolve, reject) {  
+      auth_socket.on("registration", response => {
+        if (response.status == 200) { 
+          //console.log(response.token);
+          resolve(null);
+        } else {
+          reject(`${response.status}. ${response.message}`);
+        }
+      });
     });
   }
 
@@ -91,4 +94,5 @@ class ServerConnector {
 
 var sc = new ServerConnector(SITE_PATH);
 
-module.exports = { sc };
+//module.exports = { sc };
+export default sc;
