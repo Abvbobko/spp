@@ -81,8 +81,33 @@ usersNsp.on("connection", socket => {
   });
 
   socket.on("registration", data => {
-    
+    console.log("Registrate user");
+    let login = data.login;    
+    let password = data.password;
+    db.insert_user(login, password).then(function(result) {
+      let token = auth.create_token(result.id, result.login);    
+      let response = {
+        status: 200,
+        token: token,
+        message: "Successfully register"
+      };                   
+      socket.emit("registration", response);
+      //response.status(200).cookie('token', token, {httpOnly: true}).end();
+    }).catch((err) => {
+      console.log(err);
+      let response = {
+        status: 403,
+        message: err.message
+      }
+      socket.emit("registration", response);             
+    });
   });
+});
+
+
+app.post("/users/registration", function(request, response) {  //////////////////////////////////////////////////
+  // user registration
+   
 });
 
 
@@ -131,37 +156,6 @@ tasksNsp.on("connection", spcket => {
   socket.on("getFile", data => {
 
   });
-});
-
-app.post("/users/login", function(request, response) {  //////////////////////////////////////////////////
-  // user login  
-  console.log("LogIn");
-  let login = request.body.login;    
-  let password = request.body.password;
-  auth.verify_password(login, password).then(function(is_password_correct) {
-    if (is_password_correct) {
-      db.get_user_by_login(login).then(function(user_info) { 
-        let token = auth.create_token(user_info.id, user_info.login);
-        response.status(200).cookie('token', token, {httpOnly: true}).end();
-      });
-    } else {
-      response.status(404).send();
-    }
-  });
-});
-
-app.post("/users/registration", function(request, response) {  //////////////////////////////////////////////////
-  // user registration
-  console.log("Registrate user");
-  let login = request.body.login;    
-  let password = request.body.password;
-  db.insert_user(login, password).then(function(result) {
-    let token = auth.create_token(result.id, result.login);    
-    response.status(200).cookie('token', token, {httpOnly: true}).end();
-  }).catch((err) => {
-    console.log(err);
-    response.status(403).send();
-  }); 
 });
 
 app.get("/tasks", middleware(), function(request, response) {  //////////////////////////////////////////////////
