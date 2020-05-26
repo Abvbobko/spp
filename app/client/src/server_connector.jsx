@@ -1,7 +1,7 @@
 var SERVER_PORT = 3000
 
 var SITE_PATH = `http://localhost:${SERVER_PORT}`;
-var LOGIN_IS_NECESSARY = "You must log in to the system";
+var LOGIN_IS_NECESSARY = "You must LogIn to the system";
 
 class ServerConnector {
   constructor(path) {
@@ -58,7 +58,7 @@ class ServerConnector {
   }
 
   log_in(data) {
-    return fetch(this._path + '/login', {
+    return fetch(this._path + '/users/login', {
       method: "POST",
       body: data
     }).then(function(response) {     
@@ -73,7 +73,7 @@ class ServerConnector {
   }
 
   sign_up(data) {
-    return fetch(this._path + '/registration', {
+    return fetch(this._path + '/users/registration', {
       method: "POST",
       body: data
     }).then(function(response) {     
