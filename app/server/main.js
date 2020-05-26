@@ -48,30 +48,69 @@ statusesNsp.on("connection", socket => {
         status: 500,
         message: err.message
       }      
-      socket.emit("statuses", response);            
+      socket.emit("getStatuses", response);            
     })
   });
 });
 
-const middleware = () => {    //////////////////////////////////////////////////
-  console.log("Check user's token");
-  return (request, response, next) => {      
-    const token = request.cookies.token;    
-      if (token) {        
-        let user_info = auth.verify_token(token);      
-        if (user_info) {
-          request.user_id = user_info.id;
-          next();
-        } else {          
-          console.log("Invalid token");
-          response.status(401).send("401 You must log in to the system");
-        }
-      } else {
-        console.log("No token");
-        response.status(401).send("401 You must log in to the system");
-      }  
-  }
-};
+const usersNsp = io.of("/users");
+usersNsp.on("connection", socket => {
+  socket.on("login", data => {
+    
+  });
+
+  socket.on("registration", data => {
+    
+  });
+});
+
+
+const tasksNsp = io.of("/tasks");
+
+tasksNsp.use((socket, next) => {
+  // middleware
+  console.log("Check user's token");         
+  if (socket.handshake.query && socket.handshake.query.token) {
+    let token = socket.handshake.query.token;         
+    let user_info = auth.verify_token(token);      
+    if (user_info) {
+      socket.user_id = user_info.id; ///////////////////?????????????????     
+      next();
+    } else {          
+      console.log("Invalid token");
+      let response = {
+        status: 401,
+        message: "Invalid token. You must log in to the system"
+      }      
+      socket.send(response);       
+    }
+  } else {
+    console.log("No token");
+    let response = {
+      status: 401,
+      message: "No token. You must log in to the system"
+    }      
+    socket.send(response);     
+  }  
+});
+
+tasksNsp.on("connection", spcket => {
+  socket.on("getTasks", () => {
+
+  });
+
+  socket.on("addTask", data => {
+
+  });
+
+  socket.on("deleteTask", data => {
+
+  });
+
+  socket.on("getFile", data => {
+
+  });
+});
 
 app.post("/users/login", function(request, response) {  //////////////////////////////////////////////////
   // user login  
