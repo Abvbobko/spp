@@ -40,6 +40,12 @@ class ServerConnector {
           resolve({tasks: response.tasks});
         }
       });
+
+      tasks_socket.on("error", function(msg) {
+        alert(msg);
+        resolve({tasks: []});
+      });
+
     });
 }
   
@@ -58,6 +64,11 @@ class ServerConnector {
         }
         resolve(null);
       });
+
+      tasks_socket.on("error", function(msg) {
+        alert(msg);
+        resolve(null);
+      });
     });
   }
 
@@ -74,6 +85,11 @@ class ServerConnector {
         } else {        
           resolve(response.status);
         }
+        resolve(null);
+      });
+
+      tasks_socket.on("error", function(msg) {
+        alert(msg);
         resolve(null);
       });
     });

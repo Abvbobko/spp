@@ -118,7 +118,7 @@ tasksNsp.use((socket, next) => {
     let token = socket.handshake.query.token;         
     let user_info = auth.verify_token(token);      
     if (user_info) {
-      socket.user_id = user_info.id; ///////////////////?????????????????     
+      socket.user_id = user_info.id; 
       next();
     } else {          
       console.log("Invalid token");
@@ -138,7 +138,8 @@ tasksNsp.use((socket, next) => {
   }  
 });
 
-tasksNsp.on("connection", socket => {
+tasksNsp.on("connection", socket => {  
+
   socket.on("getTasks", () => {
     console.log("Get tasks");    
     db.get_statuses().then(function(statuses) {              
