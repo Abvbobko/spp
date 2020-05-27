@@ -1,9 +1,11 @@
 const PORT = 8080    
 
+const crypto = require('crypto');
 const express = require("express");
 const http = require('http');
 const socketio = require("socket.io");
 const multer  = require("multer");
+const multerHash = require('multer-hash');
 const cookieParser = require('cookie-parser');
 
 const fs = require('fs');
@@ -11,9 +13,11 @@ const path = require('path');
 
 const app = express();
 
+const static_path = "../static/files";
+
 app.use(cookieParser());
 app.use(express.static(__dirname + '/app/static'));
-app.use(multer({dest:"../static/files"}).single("file"));
+app.use(multer({dest: static_path}).single("file"));
 // app.set('view engine', 'ejs');
 
 const db = require("./db").db;
@@ -152,7 +156,7 @@ tasksNsp.on("connection", socket => {
           status: 500,
           message: "Internal Server Error"
         }      
-        socket.send(response);
+        socket.emit("getTasks", response);
       });
 
     }).catch((err) => {
@@ -161,11 +165,59 @@ tasksNsp.on("connection", socket => {
         status: 500,
         message: "Internal Server Error"
       }      
-      socket.send(response);
+      socket.emit("getTasks", response);
     });
   });
 
   socket.on("addTask", data => {
+    console.log("Add new task");
+    let text = data.task;    
+    let date = data.date;
+    let file_data = data.file;
+    let file_name = data.file_name;
+    let status = data.status;      
+
+    let file_info = null;
+    if (file_data && file_name) {      
+      let name_on_server = Date.now().toString() + crypto.createHash('sha1').update(file_name).digest('hex');    
+      let file_path = path.resolve(__dirname, static_path + `/${name_on_server}`);
+      file_info = {
+        filename: name_on_server, 
+        originalname: file_name
+      };
+      fs.writeFile(file_path, file_data, function(err) {
+        if(err) {
+            return console.log(err);
+        }        
+        console.log("The file was saved!");
+      }); 
+    }
+
+    db.insert_task(text, date, status, file_info).then(function(task_id) {
+      let insert_result = {};
+      insert_result.id = task_id;
+      insert_result.text = text
+      if (file_info) {
+        insert_result.file_name = file_info.filename;
+        insert_result.name_on_server = file_info.originalname;        
+      }
+      if (date) {
+        insert_result.date = date;
+      }
+      insert_result.status = status;
+      let response = {
+        status: 200,
+        tasks: insert_result
+      }
+      socket.emit("addTask", response);
+    }).catch((err) => {
+      console.log(err.message);
+      let response = {
+        status: 500,
+        message: "Internal Server Error"
+      }      
+      socket.emit("addTask", response);
+    });
 
   });
 
@@ -176,39 +228,6 @@ tasksNsp.on("connection", socket => {
   socket.on("getFile", data => {
 
   });
-});
-
-app.post("/tasks", /*middleware(),*/ function(request, response) {  //////////////////////////////////////////////////
-    // add new task    
-    console.log("Add new task");
-    let text = request.body.task;    
-    let date = request.body.date;
-    let filedata = request.file;
-    let status = request.body.status;  
-    
-    console.log(filedata);
-    if(!filedata)
-      console.log("Не было передано файлов");
-    else
-      console.log("Файл загружен");
-
-    db.insert_task(text, date, status, filedata).then(function(task_id) {
-      let insert_result = {};
-      insert_result.id = task_id;
-      insert_result.text = text
-      if (filedata) {
-        insert_result.file_name = filedata.filename;
-        insert_result.name_on_server = filedata.originalname;        
-      }
-      if (date) {
-        insert_result.date = date;
-      }
-      insert_result.status = status;
-      response.status(201).location('/tasks/' + task_id).json({tasks: insert_result}).send()
-    }).catch((err) => {
-      console.log(err)
-      response.status(500).send();
-    });
 });
 
 app.delete("/tasks/:task_id", /*middleware(),*/ function(request, response) { //////////////////////////////////////////////////

@@ -168,8 +168,15 @@ export class EnterForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
-        
-        sc.post_task(data).then(this.props.callTasksUpdate);
+        let file = data.get("file");
+        const task_info = {
+            task: data.get("task"),
+            date: data.get("date"),
+            status: data.get("status"),
+            file: file,
+            file_name: file.name
+        }               
+        sc.post_task(task_info).then(this.props.callTasksUpdate);
         
         this.setState({
             isSubmit: true

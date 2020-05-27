@@ -36,25 +36,29 @@ class ServerConnector {
     tasks_socket.on("getTasks", response => {      
       if (response.status == 401) {             
         resolve({tasks: []});
-      } else {        
+      } else {                
         resolve({tasks: response.tasks});
       }
     });
   });
 }
   
-  post_task(data) { //////////////////////////////
-    return fetch('/tasks', {
-      method: 'POST',
-      body: data
-    }).then(function(response) {
-      if (response.status == 401) {
-        alert(LOGIN_IS_NECESSARY);                
-      } else if ((response.status == 200) || (response.status == 201)) {
-        return response.status;
-      }
-      return null;
-    })
+  post_task(data) {
+    let token = localStorage.getItem("token"); 
+    if (token) {  
+      tasks_socket = io(`http://localhost:8080/tasks?token=${token}`)    
+      tasks_socket.emit("addTask", data);
+    }
+    return new Promise(function(resolve, reject) {      
+      tasks_socket.on("addTask", response => {      
+        if (response.status == 401) {             
+          alert(LOGIN_IS_NECESSARY); 
+        } else {        
+          resolve(response.status);
+        }
+        resolve(null);
+      });
+    });
   }
 
  delete_task(task_id) { //////////////////////////////
