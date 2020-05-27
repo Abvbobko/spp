@@ -27,20 +27,20 @@ class ServerConnector {
   }
 
   get_tasks() {
-  let token = localStorage.getItem("token"); 
-  if (token) {  
-    tasks_socket = io(`http://localhost:8080/tasks?token=${token}`)    
-    tasks_socket.emit("getTasks");
-  }
-  return new Promise(function(resolve, reject) {      
-    tasks_socket.on("getTasks", response => {      
-      if (response.status == 401) {             
-        resolve({tasks: []});
-      } else {                
-        resolve({tasks: response.tasks});
-      }
+    let token = localStorage.getItem("token"); 
+    if (token) {  
+      tasks_socket = io(`http://localhost:8080/tasks?token=${token}`)    
+      tasks_socket.emit("getTasks");
+    }
+    return new Promise(function(resolve, reject) {      
+      tasks_socket.on("getTasks", response => {      
+        if (response.status == 401) {             
+          resolve({tasks: []});
+        } else {                
+          resolve({tasks: response.tasks});
+        }
+      });
     });
-  });
 }
   
   post_task(data) {

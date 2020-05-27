@@ -19,10 +19,11 @@ class Task extends React.Component {
     render() {
         
         let file_block;                
+        let token = localStorage.getItem("token"); 
         if (this.props.data.file_name) {
             let file_name = this.props.data.file_name.split(" ").join("_")
             file_block = <div className="task-item">
-                            <a href={`http://localhost:8080/tasks/${this.props.data.id}/file`} className="big-text" download={file_name}> 
+                            <a href={`http://localhost:8080/tasks/${this.props.data.id}/file?token=${token}`} className="big-text" download={file_name}> 
                                 {file_name}
                             </a>
                         </div>                                                           
