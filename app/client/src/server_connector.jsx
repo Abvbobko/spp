@@ -5,6 +5,7 @@ var SITE_PATH = `http://localhost:${SERVER_PORT}`;
 var LOGIN_IS_NECESSARY = "You must LogIn to the system";
 
 const auth_socket = io("http://localhost:8080/users");
+const status_socket = io("http://localhost:8080/statuses");
 
 class ServerConnector {
   constructor(path) {
@@ -12,8 +13,15 @@ class ServerConnector {
   }
 
   async get_statuses() {
-    return fetch(this._path + '/statuses').then(function(response) {     
-      return response.json();
+    status_socket.emit("getStatuses");
+    return new Promise(function(resolve, reject) {  
+      status_socket.on("getStatuses", response => {
+        if (response.status == 200) {           
+          resolve({statuses: response.statuses});
+        } else {
+          resolve({statuses: []});
+        }
+      });
     });
   }
 
