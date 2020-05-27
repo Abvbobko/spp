@@ -61,16 +61,21 @@ class ServerConnector {
     });
   }
 
- delete_task(task_id) { //////////////////////////////
-   console.log("DELETE TASK SC");
-    // добавить проверки всякие    
-    return fetch(this._path + `/tasks/${task_id}`, {
-        method: 'DELETE'        
-    }).then(function(response) {     
-      if (response.status == 401) {
-        alert(LOGIN_IS_NECESSARY);        
-      } 
-      //return ;
+  delete_task(task_id) { 
+    let token = localStorage.getItem("token"); 
+    if (token) {  
+      tasks_socket = io(`http://localhost:8080/tasks?token=${token}`)    
+      tasks_socket.emit("deleteTask", {task_id: task_id});
+    }
+    return new Promise(function(resolve, reject) {      
+      tasks_socket.on("deleteTask", response => {      
+        if (response.status != 204) {             
+          alert(LOGIN_IS_NECESSARY); 
+        } else {        
+          resolve(response.status);
+        }
+        resolve(null);
+      });
     });
   }
 

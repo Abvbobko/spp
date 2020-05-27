@@ -222,7 +222,44 @@ tasksNsp.on("connection", socket => {
   });
 
   socket.on("deleteTask", data => {
+    console.log("Delete task");
+    let task_id = data.task_id;
+    if (task_id) {    
+      db.get_file_name(task_id).then(function(file_info) {    
+        let file_path = path.resolve(__dirname, static_path + `/${file_info.name_on_server}`);
+        //delete file
+        if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
+          fs.unlink(file_path, function (err) {
+            if (err) {
+              console.log(err);
+              throw err;
+            }
+            console.log('File deleted!');
+          }); 
+        }
 
+        db.delete_task(task_id).then(function() {          
+          let response = {
+            status: 204,
+            message: 'Successfully deleted'
+          }
+          socket.emit("deleteTask", response);
+        });
+      }).catch((err) => {
+        console.log(err);
+        let response = {
+          status: 500,
+          message: "Internal Server Error"
+        }
+        socket.emit("deleteTask", response);
+      });
+    } else {
+      let response = {
+        status: 404,
+        message: "Not found"
+      }
+      socket.emit("deleteTask", response);
+    }
   });
 
   socket.on("getFile", data => {
@@ -230,30 +267,6 @@ tasksNsp.on("connection", socket => {
   });
 });
 
-app.delete("/tasks/:task_id", /*middleware(),*/ function(request, response) { //////////////////////////////////////////////////
-  // delete task 
-  console.log("Delete task");
-  db.get_file_name(request.params.task_id).then(function(file_info) {    
-    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
-    //delete file
-    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
-      fs.unlink(file_path, function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-        console.log('File deleted!');
-      }); 
-    }
-
-    db.delete_task(request.params.task_id).then(function() {          
-      response.status(204).send('Successfully deleted');
-    });
-  }).catch((err) => {
-    console.log(err);
-    response.status(500).send();
-  });
-});
 
 app.get("/tasks/:task_id/file", /*middleware(),*/ function(request, response) {    //////////////////////////////////////////////////
   // get file  
