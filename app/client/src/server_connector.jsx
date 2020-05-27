@@ -6,13 +6,14 @@ var LOGIN_IS_NECESSARY = "You must LogIn to the system";
 
 const auth_socket = io("http://localhost:8080/users");
 const status_socket = io("http://localhost:8080/statuses");
+let tasks_socket = io("http://localhost:8080/tasks");
 
 class ServerConnector {
   constructor(path) {
     this._path = path;
   }
 
-  async get_statuses() {
+  get_statuses() {
     status_socket.emit("getStatuses");
     return new Promise(function(resolve, reject) {  
       status_socket.on("getStatuses", response => {
@@ -25,19 +26,24 @@ class ServerConnector {
     });
   }
 
- get_tasks() {
-  return fetch(this._path + '/tasks').then(function(response) { 
-    if (response.status == 401) {
-   //   alert(LOGIN_IS_NECESSARY);
-      return {tasks: []};
-    } else {
-      return response.json();
-    }    
-    
+  get_tasks() {
+  let token = localStorage.getItem("token"); 
+  if (token) {  
+    tasks_socket = io(`http://localhost:8080/tasks?token=${token}`)    
+    tasks_socket.emit("getTasks");
+  }
+  return new Promise(function(resolve, reject) {      
+    tasks_socket.on("getTasks", response => {      
+      if (response.status == 401) {             
+        resolve({tasks: []});
+      } else {        
+        resolve({tasks: response.tasks});
+      }
+    });
   });
 }
   
-  post_task(data) {
+  post_task(data) { //////////////////////////////
     return fetch('/tasks', {
       method: 'POST',
       body: data
@@ -51,7 +57,7 @@ class ServerConnector {
     })
   }
 
- delete_task(task_id) {
+ delete_task(task_id) { //////////////////////////////
    console.log("DELETE TASK SC");
     // добавить проверки всякие    
     return fetch(this._path + `/tasks/${task_id}`, {
@@ -75,6 +81,7 @@ class ServerConnector {
       auth_socket.on(command, response => {
         if (response.status == 200) { 
           console.log(response.token);
+          localStorage.setItem("token", response.token);
           resolve(null);
         } else {
           resolve(`${response.status}. ${response.message}`);

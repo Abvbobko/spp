@@ -109,7 +109,7 @@ const tasksNsp = io.of("/tasks");
 
 tasksNsp.use((socket, next) => {
   // middleware
-  console.log("Check user's token");         
+  console.log("Check user's token");        
   if (socket.handshake.query && socket.handshake.query.token) {
     let token = socket.handshake.query.token;         
     let user_info = auth.verify_token(token);      
@@ -134,9 +134,35 @@ tasksNsp.use((socket, next) => {
   }  
 });
 
-tasksNsp.on("connection", spcket => {
+tasksNsp.on("connection", socket => {
   socket.on("getTasks", () => {
+    console.log("Get tasks");    
+    db.get_statuses().then(function(statuses) {              
+      db.get_tasks().then(function(tasks) { 
+        let status_map = data_manipulator.get_status_map(statuses);   
+        tasks = data_manipulator.status_id_to_name(tasks, status_map);                   
+        let response = {
+          status: 200,
+          tasks: tasks
+        }              
+        socket.emit("getTasks", response);
+      }).catch((err) => {        
+        console.log(err)        
+        let response = {
+          status: 500,
+          message: "Internal Server Error"
+        }      
+        socket.send(response);
+      });
 
+    }).catch((err) => {
+      console.log(err)
+      let response = {
+        status: 500,
+        message: "Internal Server Error"
+      }      
+      socket.send(response);
+    });
   });
 
   socket.on("addTask", data => {
@@ -149,25 +175,6 @@ tasksNsp.on("connection", spcket => {
 
   socket.on("getFile", data => {
 
-  });
-});
-
-app.get("/tasks", /*middleware(),*/ function(request, response) {  //////////////////////////////////////////////////
-  // get all tasks  
-  console.log("Get tasks");
-  db.get_statuses().then(function(statuses) {              
-    db.get_tasks().then(function(tasks) { 
-      let status_map = data_manipulator.get_status_map(statuses);   
-      tasks = data_manipulator.status_id_to_name(tasks, status_map);           
-      response.status(200).json({tasks: tasks})
-    }).catch((err) => {
-      console.log(err)
-      response.status(500).send();
-    });
-
-  }).catch((err) => {
-    console.log(err)
-    response.status(500).send();
   });
 });
 
