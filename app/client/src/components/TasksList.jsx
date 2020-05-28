@@ -31,8 +31,8 @@ class Task extends React.Component {
     
         let date_block;
         if (this.props.data.date) {
-            let date = new Date(this.props.data.date);
-
+            let date = new Date(parseInt(this.props.data.date));
+            console.log(date);
             let date_str = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
             date_block = <div className="task-item">{date_str}</div>                
         } else {

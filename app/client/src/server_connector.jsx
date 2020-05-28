@@ -67,18 +67,33 @@ class ServerConnector {
     return this.auth_command("signup", data, error_text);    
   }
 
+  async get_tasks() { 
+    let statusesProjectile = `
+      id, 
+      text, 
+      status,
+      file_name,
+      name_on_server, 
+      date
+    `;
+    let statusesQuery = `tasks`;
 
- get_tasks() { ///////////////////////////////
-  return fetch(this._path + '/tasks').then(function(response) { 
-    if (response.status == 401) {
-   //   alert(LOGIN_IS_NECESSARY);
-      return {tasks: []};
-    } else {
-      return response.json();
-    }    
-    
-  });
-}
+    let tasks = await qlQuery({
+        query: ` {
+            ${statusesQuery} {
+                ${statusesProjectile}
+            }
+        }`
+    })
+    let result_tasks_list = [];
+    for (let task_index in tasks.data.tasks) {
+      result_tasks_list.push(tasks.data.tasks[task_index]);
+    }      
+    return {tasks: result_tasks_list};
+    //   if (response.status == 401) {
+    // //   alert(LOGIN_IS_NECESSARY);
+    //     return {tasks: []};    
+  }
   
   post_task(data) { ///////////////////////////////
     return fetch('/tasks', {

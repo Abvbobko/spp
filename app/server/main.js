@@ -24,8 +24,8 @@ let root = {
   statuses: getStatuses,
   login: login,
   signup: registration,  
-  
-  // getTasks: getTasks,  
+  tasks: getTasks,    
+
   // addTask: addTask,
   // deleteTask: deleteTask  
 }
@@ -114,29 +114,24 @@ async function registration(args, context) {
   return token;
 }
 
-
-
-
-app.get("/tasks",/* middleware(),*/ function(request, response) {
-  // получить все таски  
+async function getTasks(args, context) {
   console.log("Get tasks");
-  db.get_statuses().then(function(statuses) {              
-    db.get_tasks().then(function(tasks) { 
+  let tasks = db.get_statuses().then(function(statuses) {              
+    return db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);   
       tasks = data_manipulator.status_id_to_name(tasks, status_map);  
-    //  response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});      
-      response.status(200).json({tasks: tasks})
-    
+      return tasks;
     }).catch((err) => {
       console.log(err)
-      response.status(500).send();
+      return [];
     });
 
   }).catch((err) => {
-    console.log(err)
-    response.status(500).send();
-  });
-});
+    return [];
+  });  
+  return tasks;
+}
+
 
 app.post("/tasks", /* middleware(),*/ function(request, response) {
     // добавить таску - возвращается в location /tasks/id

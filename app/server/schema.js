@@ -26,8 +26,8 @@ let appSchema = buildSchema(`
 
     type Task {
         id: Int
-        text: String        
-        status: String
+        text: String!        
+        status: String!
         file_name: String
         name_on_server: String        
         date: String        
