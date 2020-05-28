@@ -1,9 +1,9 @@
 var PORT = 8080    
 
 const express = require("express");
-//const ejs = require('ejs');
 const multer  = require("multer");
 const cookieParser = require('cookie-parser');
+const graphqlHTTP = require('express-graphql');
 
 var fs = require('fs');
 const path = require('path'); 
@@ -13,11 +13,31 @@ const app = express();
 app.use(cookieParser());
 app.use(express.static(__dirname + '/app/static'));
 app.use(multer({dest:"../static/files"}).single("file"));
-//app.set('view engine', 'ejs');
-//app.set('views', './static/pages')
+
 var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
 var auth = require("./authentication.js").manipulator;
+
+let root = {
+  // getStatuses: getStatuses,
+  
+  // login: login,
+  // registration: registration,
+  
+  // getTasks: getTasks,  
+  // addTask: addTask,
+  // deleteTask: deleteTask  
+}
+
+app.use('/graphql', (request, response) => 
+    graphqlHTTP({
+        schema: appSchema, 
+        rootValue: root,
+        context: {request, response},
+        graphiql: true
+    })(request, response)
+    
+)
 
 const middleware = () => {    
   return (request, response, next) => {      
