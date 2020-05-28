@@ -23,8 +23,7 @@ const schema = require("./schema.js").appSchema;
 let root = {
   statuses: getStatuses,
   login: login,
-  
-  // registration: registration,
+  signup: registration,  
   
   // getTasks: getTasks,  
   // addTask: addTask,
@@ -100,21 +99,23 @@ async function login(args, context) {
   return token;
 }
 
-
-
-app.post("/registration", function(request, response) {
-  // регистрация юзера
+async function registration(args, context) {
   console.log("registration");
-  let login = request.body.login;    
-  let password = request.body.password;
-  db.insert_user(login, password).then(function(result) {
-    let token = auth.create_token(result.id, result.login);    
-    response.status(200).cookie('token', token, {httpOnly: true}).end();   
+  const {login, password} = args;
+  
+  let token = db.insert_user(login, password).then(function(result) {
+    const token = auth.create_token(result.id, result.login);    
+    return token;    
   }).catch((err) => {
     console.log(err);
-    response.status(403).send();
-  }); 
-});
+    return "";
+  });
+  console.log(token);
+  return token;
+}
+
+
+
 
 app.get("/tasks",/* middleware(),*/ function(request, response) {
   // получить все таски  

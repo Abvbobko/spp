@@ -42,24 +42,32 @@ class ServerConnector {
     return {statuses: statuses_array}
   }
 
-  async log_in(data) {
+  async auth_command(command, data, error_text) {
     let auth_result = await qlQuery({
       query: `
         mutation {
-            login(login: "${data.login}", password: "${data.password}")
+            ${command}(login: "${data.login}", password: "${data.password}")
         }
       `
     })
-    let token = auth_result.data["login"]    
+    let token = auth_result.data[`${command}`]    
     if (!token) {      
-      return "Login or password is incorrect.";
+      return error_text;
     }
     return null;    
   }
 
+  async log_in(data) {
+    const error_text = "Login or password is incorrect.";
+    return this.auth_command("login", data, error_text);      
+  }
+
+  async sign_up(data) {
+    const error_text = "Check the entered data. Perhaps a user with this login already exists.";
+    return this.auth_command("signup", data, error_text);    
+  }
 
 
-  
  get_tasks() { ///////////////////////////////
   return fetch(this._path + '/tasks').then(function(response) { 
     if (response.status == 401) {
@@ -101,21 +109,6 @@ class ServerConnector {
 
   get_task_file(task_id) {
     /////////////////////////////////////// empty
-  }
-
-  sign_up(data) { ///////////////////////////////
-    return fetch(this._path + '/registration', {
-      method: "POST",
-      body: data
-    }).then(function(response) {     
-      if (response.status != 200) {
-        //alert(response.statusText);        
-        return "Check the entered data. Perhaps a user with this login already exists.";     
-      } else {
-        return null;
-      }    
-      //return response.json();
-    });
   }
 
 }

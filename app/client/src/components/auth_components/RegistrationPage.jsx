@@ -50,10 +50,15 @@ export class RegistrationForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
+        const login_info = {
+            login: data.get("login"),
+            password: data.get("password")
+        }
+
         if (data.get('password') != data.get('repeat_password')) {
             alert("Passwords don't match");
         } else {
-            sc.sign_up(data).then(function(err) {
+            sc.sign_up(login_info).then(function(err) {
                 if (err) {                
                     alert(err);
                 } else {
