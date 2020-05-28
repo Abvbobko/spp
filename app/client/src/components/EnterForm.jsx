@@ -167,8 +167,7 @@ export class EnterForm extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const data = new FormData(e.target);
-        
+        const data = new FormData(e.target);        
         sc.post_task(data).then(this.props.callTasksUpdate);
         
         this.setState({

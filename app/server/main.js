@@ -25,9 +25,7 @@ let root = {
   login: login,
   signup: registration,  
   tasks: getTasks,    
-
-  // addTask: addTask,
-  // deleteTask: deleteTask  
+  deleteTask: deleteTask  
 }
 
 app.use('/graphql', (request, response) => 
@@ -132,6 +130,32 @@ async function getTasks(args, context) {
   return tasks;
 }
 
+async function deleteTask(args, context) {
+  // удалить таску
+  console.log("delete")
+  let task_id = args.id;
+  let is_deleted = db.get_file_name(task_id).then(function(file_info) {    
+    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
+    //delete file
+    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
+      fs.unlink(file_path, function (err) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log('File deleted!');
+      }); 
+    }
+    
+    return db.delete_task(task_id).then(function() {          
+      return true;
+    });
+  }).catch((err) => {
+    console.log(err);
+    return false;
+  });
+  return is_deleted;
+}
 
 app.post("/tasks", /* middleware(),*/ function(request, response) {
     // добавить таску - возвращается в location /tasks/id
@@ -168,54 +192,12 @@ app.post("/tasks", /* middleware(),*/ function(request, response) {
     });
 });
 
-// app.options("/tasks/:task_id", middleware(), function(request, response){
-//   console.log("OPTIONS");
-//   //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
-//     // response.header({"access-control-allow-methods": "DELETE"});
-//     // response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//  //   console.log(response);
-//     response.status(200).send();
-// });
-
-app.delete("/tasks/:task_id", /* middleware(),*/ function(request, response) {
-  // удалить таску
-    
-  db.get_file_name(request.params.task_id).then(function(file_info) {    
-    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
-    //delete file
-    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
-      fs.unlink(file_path, function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-        console.log('File deleted!');
-      }); 
-    }
-    
-    // response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});       
-    // response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    // response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  
-    db.delete_task(request.params.task_id).then(function() {          
-      response.status(204).send('Successfully deleted');
-    });
-  }).catch((err) => {
-    console.log(err);
-    response.status(500).send();
-  });
-});
-
 app.get("/tasks/:task_id/file", /* middleware(),*/ function(request, response) {  
   // получить файл  
   console.log("Get file");
   db.get_file_name(request.params.task_id).then(function(file_info) {    
-    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);//__dirname + `/files/${file_info.name_on_server}`;
-    //console.log(file_path);
-    //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});   
-    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {
-      //console.log(file_info);  
-      //var file = fs.readFile(file_path, 'binary');
+    let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
+    if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {      
       response.status(200).type("multipart/form-data").download(file_path, file_info.origin_name);
     } else {  
       response.status(404).send();

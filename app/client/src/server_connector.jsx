@@ -88,14 +88,27 @@ class ServerConnector {
     let result_tasks_list = [];
     for (let task_index in tasks.data.tasks) {
       result_tasks_list.push(tasks.data.tasks[task_index]);
-    }      
+    }         
     return {tasks: result_tasks_list};
     //   if (response.status == 401) {
     // //   alert(LOGIN_IS_NECESSARY);
     //     return {tasks: []};    
   }
+
+  async delete_task(task_id) { 
+    let is_deleted = await qlQuery({
+      query: `
+        mutation {
+            deleteTask(id: ${task_id})
+        }
+      `
+    })
+    if (!is_deleted) {
+      alert(LOGIN_IS_NECESSARY); 
+    }    
+  }
   
-  post_task(data) { ///////////////////////////////
+  post_task(data) { 
     return fetch('/tasks', {
       method: 'POST',
       body: data
@@ -107,19 +120,6 @@ class ServerConnector {
       }
       return null;
     })
-  }
-
- delete_task(task_id) { ///////////////////////////////
-   console.log("DELETE TASK SC");
-    // добавить проверки всякие    
-    return fetch(this._path + `/tasks/${task_id}`, {
-        method: 'DELETE'        
-    }).then(function(response) {     
-      if (response.status == 401) {
-        alert(LOGIN_IS_NECESSARY);        
-      } 
-      //return ;
-    });
   }
 
   get_task_file(task_id) {
