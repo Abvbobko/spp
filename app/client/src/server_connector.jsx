@@ -3,15 +3,43 @@ var SERVER_PORT = 3000
 var SITE_PATH = `http://localhost:${SERVER_PORT}`;
 var LOGIN_IS_NECESSARY = "You must log in to the system";
 
+async function qlQuery(obj) {
+  console.log("Query" + obj.query)
+  let req = new Request(`${SITE_PATH}/graphql`)
+  return fetch(req, {
+      credentials: "include",
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify(obj)
+  }).then(
+    (response) => response.json()
+  );
+}
+
 class ServerConnector {
   constructor(path) {
     this._path = path;
   }
 
   async get_statuses() {
-    return fetch(this._path + '/statuses').then(function(response) {     
-      return response.json();
-    });
+    let statusesProjectile = `name`;
+    let statusesQuery = `statuses`;
+
+    let statuses = await qlQuery({
+        query: ` {
+            ${statusesQuery} {
+                ${statusesProjectile}
+            }
+        }`
+    })
+    let statuses_array = [];
+    for (let status in statuses.data.statuses) {
+      statuses_array.push(statuses.data.statuses[status].name);
+    }    
+    return {statuses: statuses_array}
   }
 
  get_tasks() {

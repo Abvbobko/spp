@@ -52,7 +52,7 @@ class AppPage extends React.Component {
     return (
       <div>
           <div className="top">             
-            <div class="input-block">            
+            <div className="input-block">            
               <EnterForm callTasksUpdate={this.callTasksUpdate} />
               <FilterForm setFilterStatus={this.setFilterStatus}/>
             </div>

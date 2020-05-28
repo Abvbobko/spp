@@ -18,8 +18,10 @@ var db = require("./db").db;
 var data_manipulator = require("./data_manipulator").manipulator;
 var auth = require("./authentication.js").manipulator;
 
+const schema = require("./schema.js").appSchema;
+
 let root = {
-  // getStatuses: getStatuses,
+  statuses: getStatuses,
   
   // login: login,
   // registration: registration,
@@ -31,7 +33,7 @@ let root = {
 
 app.use('/graphql', (request, response) => 
     graphqlHTTP({
-        schema: appSchema, 
+        schema: schema, 
         rootValue: root,
         context: {request, response},
         graphiql: true
@@ -39,26 +41,58 @@ app.use('/graphql', (request, response) =>
     
 )
 
-const middleware = () => {    
-  return (request, response, next) => {      
-    const token = request.cookies.token;
-    console.log(request.cookies);
-      if (token) {
-        let user_info = auth.verify_token(token);
-        console.log(user_info);
-        if (user_info) {
-          request.user_id = user_info.id;
-          next();
-        } else {          
-          console.log("Invalid token");
-          response.status(401).send("401 You must log in to the system");
-        }
-      } else {
-        console.log("No token");
-        response.status(401).send("401 You must log in to the system");
-      }  
-  }
-};
+// const middleware = () => {    
+//   return (request, response, next) => {      
+//     const token = request.cookies.token;
+//     console.log(request.cookies);
+//       if (token) {
+//         let user_info = auth.verify_token(token);
+//         console.log(user_info);
+//         if (user_info) {
+//           request.user_id = user_info.id;
+//           next();
+//         } else {          
+//           console.log("Invalid token");
+//           response.status(401).send("401 You must log in to the system");
+//         }
+//       } else {
+//         console.log("No token");
+//         response.status(401).send("401 You must log in to the system");
+//       }  
+//   }
+// };
+
+async function getStatuses(args, context) {
+  console.log("Get statuses")
+  // if (!context.request.currentUser) {
+  //     return [];
+  // }
+
+  let result = await db.get_statuses().then(function(statuses) {
+    let status_map = data_manipulator.get_status_map(statuses); 
+    let result = [];
+    status_map.forEach((status_name, status_id) => {    
+      result.push({name: status_name});
+    })    
+    return result;
+  }).catch((err) => {
+    console.log(err);    
+    return [];
+  });
+  console.log(result);
+  return result;
+}
+
+// app.get("/statuses", function(request, response) {
+//   db.get_statuses().then(function(statuses) {
+//     let status_map = data_manipulator.get_status_map(statuses);      
+//     //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
+//     response.status(200).json({statuses: Array.from(status_map.values())});
+//   }).catch((err) => {
+//     console.log(err);
+//     response.status(500).send();
+//   })
+// });
 
 app.post("/login", function(request, response) {
   // вход юзера
@@ -92,18 +126,7 @@ app.post("/registration", function(request, response) {
   }); 
 });
 
-app.get("/statuses", function(request, response) {
-  db.get_statuses().then(function(statuses) {
-    let status_map = data_manipulator.get_status_map(statuses);      
-    //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
-    response.status(200).json({statuses: Array.from(status_map.values())});
-  }).catch((err) => {
-    console.log(err);
-    response.status(500).send();
-  })
-});
-
-app.get("/tasks", middleware(), function(request, response) {
+app.get("/tasks",/* middleware(),*/ function(request, response) {
   // получить все таски  
   console.log("Get tasks");
   db.get_statuses().then(function(statuses) {              
@@ -124,7 +147,7 @@ app.get("/tasks", middleware(), function(request, response) {
   });
 });
 
-app.post("/tasks", middleware(), function(request, response) {
+app.post("/tasks", /* middleware(),*/ function(request, response) {
     // добавить таску - возвращается в location /tasks/id
     // date - dd.mm.yyyy
     console.log("post start");
@@ -168,7 +191,7 @@ app.post("/tasks", middleware(), function(request, response) {
 //     response.status(200).send();
 // });
 
-app.delete("/tasks/:task_id", middleware(), function(request, response) {
+app.delete("/tasks/:task_id", /* middleware(),*/ function(request, response) {
   // удалить таску
     
   db.get_file_name(request.params.task_id).then(function(file_info) {    
@@ -197,7 +220,7 @@ app.delete("/tasks/:task_id", middleware(), function(request, response) {
   });
 });
 
-app.get("/tasks/:task_id/file", middleware(), function(request, response) {  
+app.get("/tasks/:task_id/file", /* middleware(),*/ function(request, response) {  
   // получить файл  
   console.log("Get file");
   db.get_file_name(request.params.task_id).then(function(file_info) {    

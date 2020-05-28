@@ -3,7 +3,7 @@ var { buildSchema } = require('graphql');
 let appSchema = buildSchema(`
 
     type Query {        
-        statuses(token: String): [Status]
+        statuses: [Status]
         tasks(token: String): [Task]        
     },
 
@@ -33,5 +33,4 @@ let appSchema = buildSchema(`
         date: String        
     }
 `);
-
-module.exports = appSchema
+module.exports = { appSchema };
