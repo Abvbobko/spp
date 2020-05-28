@@ -53,6 +53,8 @@ class ServerConnector {
     let token = auth_result.data[`${command}`]    
     if (!token) {      
       return error_text;
+    } else {
+      localStorage.setItem("token", token);
     }
     return null;    
   }
@@ -68,6 +70,7 @@ class ServerConnector {
   }
 
   async get_tasks() { 
+    let token = localStorage.getItem("token");     
     let statusesProjectile = `
       id, 
       text, 
@@ -76,7 +79,7 @@ class ServerConnector {
       name_on_server, 
       date
     `;
-    let statusesQuery = `tasks`;
+    let statusesQuery = token ? `tasks(token: "${token}")` : `tasks`;
 
     let tasks = await qlQuery({
         query: ` {
@@ -89,17 +92,16 @@ class ServerConnector {
     for (let task_index in tasks.data.tasks) {
       result_tasks_list.push(tasks.data.tasks[task_index]);
     }         
-    return {tasks: result_tasks_list};
-    //   if (response.status == 401) {
-    // //   alert(LOGIN_IS_NECESSARY);
-    //     return {tasks: []};    
+    return {tasks: result_tasks_list}; 
   }
 
   async delete_task(task_id) { 
+    let token = localStorage.getItem("token"); 
+    const token_parameter = token ? `, token: "${token}"` : ``;
     let is_deleted = await qlQuery({
       query: `
         mutation {
-            deleteTask(id: ${task_id})
+            deleteTask(id: ${task_id}${token_parameter})
         }
       `
     })
@@ -109,9 +111,11 @@ class ServerConnector {
   }
   
   post_task(data) { 
+    let token = localStorage.getItem("token"); 
+    data.set("token", token);
     return fetch('/tasks', {
       method: 'POST',
-      body: data
+      body: data,      
     }).then(function(response) {
       if (response.status == 401) {
         alert(LOGIN_IS_NECESSARY);                
@@ -121,11 +125,6 @@ class ServerConnector {
       return null;
     })
   }
-
-  get_task_file(task_id) {
-    /////////////////////////////////////// empty
-  }
-
 }
 
 var sc = new ServerConnector(SITE_PATH);

@@ -38,26 +38,12 @@ app.use('/graphql', (request, response) =>
     
 )
 
-// const middleware = () => {    
-//   return (request, response, next) => {      
-//     const token = request.cookies.token;
-//     console.log(request.cookies);
-//       if (token) {
-//         let user_info = auth.verify_token(token);
-//         console.log(user_info);
-//         if (user_info) {
-//           request.user_id = user_info.id;
-//           next();
-//         } else {          
-//           console.log("Invalid token");
-//           response.status(401).send("401 You must log in to the system");
-//         }
-//       } else {
-//         console.log("No token");
-//         response.status(401).send("401 You must log in to the system");
-//       }  
-//   }
-// };
+function verify_token(token) {    
+    if (token && auth.verify_token(token)) {
+      return true;
+    }
+    return false;      
+};
 
 async function getStatuses(args, context) {
   console.log("Get statuses")
@@ -114,6 +100,9 @@ async function registration(args, context) {
 
 async function getTasks(args, context) {
   console.log("Get tasks");
+  if (!args.token || !verify_token(args.token)) {
+    return [];
+  }
   let tasks = db.get_statuses().then(function(statuses) {              
     return db.get_tasks().then(function(tasks) { 
       let status_map = data_manipulator.get_status_map(statuses);   
@@ -132,6 +121,9 @@ async function getTasks(args, context) {
 
 async function deleteTask(args, context) {
   // удалить таску
+  if (!args.token || !verify_token(args.token)) {
+    return false;
+  }
   console.log("delete")
   let task_id = args.id;
   let is_deleted = db.get_file_name(task_id).then(function(file_info) {    
@@ -160,6 +152,10 @@ async function deleteTask(args, context) {
 app.post("/tasks", /* middleware(),*/ function(request, response) {
     // добавить таску - возвращается в location /tasks/id
     // date - dd.mm.yyyy
+    if (!request.body.token || !verify_token(request.body.token)) {
+      response.status(401).send("Invalid token");
+      return;
+    }
     console.log("post start");
     let text = request.body.task;    
     let date = request.body.date;
@@ -195,6 +191,7 @@ app.post("/tasks", /* middleware(),*/ function(request, response) {
 app.get("/tasks/:task_id/file", /* middleware(),*/ function(request, response) {  
   // получить файл  
   console.log("Get file");
+
   db.get_file_name(request.params.task_id).then(function(file_info) {    
     let file_path = path.resolve(__dirname, `../static/files/${file_info.name_on_server}`);
     if ((Object.keys(file_info).length) && (fs.existsSync(file_path))) {      

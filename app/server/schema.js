@@ -10,7 +10,7 @@ let appSchema = buildSchema(`
     type Mutation {
         login(login: String!, password: String!): String
         signup(login: String!, password: String!): String                       
-        deleteTask(id: Int!): Boolean
+        deleteTask(id: Int!, token: String): Boolean
     }
 
     type Status {
