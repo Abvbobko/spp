@@ -26,7 +26,9 @@ class DataAccessor {
         console.log("Getting status by id.");
         let con = this._con;
         console.log(status_name);
-        const sql_script = `SELECT id FROM statuses WHERE name = "${status_name}"`
+        const sql_script = `SELECT id 
+                            FROM statuses 
+                            WHERE name = "${status_name}"`
         return new Promise(function(resolve, reject) {            
             con.query(sql_script, function(err, result) {
                 if (result.length == 0) {
@@ -52,7 +54,10 @@ class DataAccessor {
         return get_status_id.then(function(status_id) {
             let sql_script;
             if (status_id) {
-                sql_script = `SELECT * FROM tasks WHERE statuses_id = "${status_id}" ORDER BY id DESC`;
+                sql_script = `SELECT * 
+                                FROM tasks 
+                                WHERE statuses_id = "${status_id}" 
+                                ORDER BY id DESC`;
             } else {
                 sql_script = `SELECT * FROM tasks ORDER BY id DESC`;
             }
@@ -94,7 +99,9 @@ class DataAccessor {
     delete_task(task_id) {
         let con = this._con;
         return new Promise(function(resolve, reject) {     
-            const sql_script = `DELETE FROM tasks WHERE id = "${task_id}"`;
+            const sql_script = `DELETE 
+                                FROM tasks 
+                                WHERE id = "${task_id}"`;
             con.query(sql_script, function(err, result) {
                 if (err) {
                     reject(err);
@@ -103,57 +110,6 @@ class DataAccessor {
                 }
             });
         }).catch((err) => {console.log(err)}); 
-    }
-
-    update_task(task_id, task_text, task_date, task_status, task_file) {
-        // не тестировалось
-        let con = this._con;
-        // undefined - doesn't change
-        // null - empty
-        return this.get_status_id_by_name(task_status).then(function(status_id) {  
-            let task_text_sql;
-            if (task_text !== undefined) {
-                task_text_sql = `text = "${task_text}"`;                
-            }
-            let task_date_sql;
-            if (task_date !== undefined) {
-                let date = task_date != '' ? task_date : null;
-                task_date_sql = `date = "${date}"`;                
-            }
-            let task_file_original_sql;
-            let task_file_server_sql;
-            if (task_file !== undefined) {
-                let original_name = task_file != undefined ? task_file.originalname : null;
-                let file_name = task_file != undefined ? task_file.filename : null;
-                
-                task_file_original_sql = `file_name = "${original_name}"`;
-                task_file_server_sql = `name_on_server = "${file_name}"`;
-            }
-            let task_status_sql = `STATUSES_id = "${status_id}"`;
-            let sql_params = [
-                task_text_sql, 
-                task_date_sql, 
-                task_file_original_sql, 
-                task_file_server_sql, 
-                task_status_sql
-            ].join(", ");
-            
-            const sql_script = `UPDATE tasks 
-                                    SET 
-                                        ${sql_params} 
-                                    WHERE id = "${task_id}"`;
-
-            return new Promise(function(resolve, reject) {         
-                con.query(sql_script, function(err, result) {
-                    if (err) {
-                        reject(err);
-                    } else {                    
-                        resolve(result.insertId);
-                    }
-                });
-            });
-
-        }).catch((err) => {console.log(err)});
     }
 
     get_file_name(task_id) {
@@ -176,19 +132,14 @@ class DataAccessor {
     }
 
     get_statuses() {
-        const sql = "SELECT * FROM statuses";        
+        const sql = `SELECT * FROM statuses`;        
         let con = this._con;
-        return new Promise(function(resolve, reject) {
-            // Эта функция будет вызвана автоматически
+        return new Promise(function(resolve, reject) {            
             console.log("Start getting statuses from database");
             con.query(sql, function(err, result) {
                 if(err) 
                     reject(err);
-                else {           
-                    // console.log(result);         
-                    // let statuses = []
-                    // for (let i = 0; i < result.length; i++)
-                    //     statuses.push(result[i].name);                                                                         
+                else {                                                                                
                     resolve(result);
                 } 
                     
@@ -226,7 +177,9 @@ class DataAccessor {
         let salt = bcrypt.genSaltSync(10);
         let passwordHash = bcrypt.hashSync(password, salt)
         const user_data = [login, passwordHash, salt];
-        const sql = "INSERT INTO users(login, password, salt) VALUES(?, ?, ?)";
+        const sql = `INSERT 
+                        INTO users(login, password, salt) 
+                        VALUES(?, ?, ?)`;
 
         return new Promise(function(resolve, reject) {
             con.query(sql, user_data, function(err, result) {
@@ -240,8 +193,7 @@ class DataAccessor {
         }).catch((err) => {console.log(err)});
     }
 
-    close_connection() {
-        // закрытие подключенияo 
+    close_connection() {    
         this._con.end(function(err) {
             if (err) {
                 console.log("Ошибка: " + err.message);
