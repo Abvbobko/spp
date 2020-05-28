@@ -22,8 +22,8 @@ const schema = require("./schema.js").appSchema;
 
 let root = {
   statuses: getStatuses,
+  login: login,
   
-  // login: login,
   // registration: registration,
   
   // getTasks: getTasks,  
@@ -83,34 +83,24 @@ async function getStatuses(args, context) {
   return result;
 }
 
-// app.get("/statuses", function(request, response) {
-//   db.get_statuses().then(function(statuses) {
-//     let status_map = data_manipulator.get_status_map(statuses);      
-//     //response.set({"Access-Control-Allow-Origin": "http://localhost:3000"});
-//     response.status(200).json({statuses: Array.from(status_map.values())});
-//   }).catch((err) => {
-//     console.log(err);
-//     response.status(500).send();
-//   })
-// });
-
-app.post("/login", function(request, response) {
+async function login(args, context) {
   // вход юзера
   console.log("login");
-  let login = request.body.login;    
-  let password = request.body.password;
-  auth.verify_password(login, password).then(function(is_password_correct) {
+  const {login, password} = args;
+  let token = await auth.verify_password(login, password).then(function(is_password_correct) {
     if (is_password_correct) {
-      db.get_user_by_login(login).then(function(user_info) { 
-        let token = auth.create_token(user_info.id, user_info.login);
-        response.status(200).cookie('token', token, {httpOnly: true}).end();
+      return db.get_user_by_login(login).then(async function(user_info) { 
+        let token = auth.create_token(user_info.id, user_info.login);        
+        return token;        
       });
     } else {
-      
-      response.status(404).send();
+      return ""
     }
   });
-});
+  return token;
+}
+
+
 
 app.post("/registration", function(request, response) {
   // регистрация юзера

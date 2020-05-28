@@ -42,7 +42,25 @@ class ServerConnector {
     return {statuses: statuses_array}
   }
 
- get_tasks() {
+  async log_in(data) {
+    let auth_result = await qlQuery({
+      query: `
+        mutation {
+            login(login: "${data.login}", password: "${data.password}")
+        }
+      `
+    })
+    let token = auth_result.data["login"]    
+    if (!token) {      
+      return "Login or password is incorrect.";
+    }
+    return null;    
+  }
+
+
+
+  
+ get_tasks() { ///////////////////////////////
   return fetch(this._path + '/tasks').then(function(response) { 
     if (response.status == 401) {
    //   alert(LOGIN_IS_NECESSARY);
@@ -54,7 +72,7 @@ class ServerConnector {
   });
 }
   
-  post_task(data) {
+  post_task(data) { ///////////////////////////////
     return fetch('/tasks', {
       method: 'POST',
       body: data
@@ -68,7 +86,7 @@ class ServerConnector {
     })
   }
 
- delete_task(task_id) {
+ delete_task(task_id) { ///////////////////////////////
    console.log("DELETE TASK SC");
     // добавить проверки всякие    
     return fetch(this._path + `/tasks/${task_id}`, {
@@ -85,22 +103,7 @@ class ServerConnector {
     /////////////////////////////////////// empty
   }
 
-  log_in(data) {
-    return fetch(this._path + '/login', {
-      method: "POST",
-      body: data
-    }).then(function(response) {     
-      if (response.status != 200) {
-        //alert(response.statusText);        
-        return "Login or password is incorrect.";     
-      } else {
-        return null;
-      }    
-      //return response.json();
-    });
-  }
-
-  sign_up(data) {
+  sign_up(data) { ///////////////////////////////
     return fetch(this._path + '/registration', {
       method: "POST",
       body: data

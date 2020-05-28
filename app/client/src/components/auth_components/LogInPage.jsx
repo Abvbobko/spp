@@ -46,17 +46,18 @@ export class LogInForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const data = new FormData(e.target);
-        console.log("send data");
-        sc.log_in(data).then(function(err) {
-            if (err) {
-                console.log("errrorrr");
+        
+        const login_info = {
+            login: data.get("login"),
+            password: data.get("password")
+        }        
+        sc.log_in(login_info).then(function(err) {
+            if (err) {                
                 alert(err);
-            } else {
-                console.log("ok");
+            } else {                
                 window.location = "http://localhost:3000";
             }
-        });
-        //если ошибка, то alert
+        });     
     }
 
     render() {
